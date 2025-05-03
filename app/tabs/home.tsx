@@ -1,22 +1,22 @@
-// import tetap
-import React from 'react';
-import { View, Text, TouchableOpacity, FlatList, SafeAreaView, Dimensions, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { Dimensions, FlatList, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function HomePage() {
   const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState('');
 
   const categories = [
     { name: 'Elektronik' },
     { name: 'Fashion' },
     { name: 'Otomotif' },
     { name: 'Buku' },
-    { name: 'Furniture'},
+    { name: 'Furniture' },
   ];
 
-  const products = [
+  const allProducts = [
     { name: 'Kamera Canon AE-1', price: 'Rp850.000' },
     { name: 'Meja Belajar Kayu', price: 'Rp910.000' },
     { name: 'Jaket Denim Levis', price: 'Rp460.000' },
@@ -26,19 +26,22 @@ export default function HomePage() {
     { name: 'Headphone Sony WH-1000XM4', price: 'Rp3.499.000' },
   ];
 
+  const filteredProducts = allProducts.filter((product) =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 48) / 2;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <FlatList
-        data={products}
+        data={filteredProducts}
         keyExtractor={(item) => item.name}
         numColumns={2}
         columnWrapperStyle={{ justifyContent: 'space-between', marginBottom: 15 }}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 100, paddingTop: 0 }}
-
         ListHeaderComponent={
           <>
             <LinearGradient colors={['#26C2FF', '#220593']} start={{ x: 2, y: 0 }} end={{ x: 0, y: 0 }} style={{ paddingTop: 100, paddingBottom: 30, paddingHorizontal: 20, borderBottomLeftRadius: 30, borderBottomRightRadius: 30 }}>
@@ -51,7 +54,13 @@ export default function HomePage() {
               <View style={{ borderRadius: 25, overflow: 'hidden' }}>
                 <LinearGradient colors={['#220593', '#26C2FF']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ padding: 1.5, borderRadius: 25 }}>
                   <View style={{ backgroundColor: '#fff', borderRadius: 25, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 8 }}>
-                    <Text style={{ flex: 1, color: '#000', fontSize: 14 }}>Cari apa hari ini?</Text>
+                    <TextInput
+                      placeholder="Cari apa hari ini?"
+                      placeholderTextColor="#888"
+                      value={searchQuery}
+                      onChangeText={setSearchQuery}
+                      style={{ flex: 1, color: '#000', fontSize: 14 }}
+                    />
                     <Ionicons name="search-outline" size={18} color="#26C2FF" />
                   </View>
                 </LinearGradient>
@@ -59,7 +68,7 @@ export default function HomePage() {
             </View>
 
             {/* Keunggulan Fitur */}
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 24, paddingHorizontal: 10,  }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 24, paddingHorizontal: 10 }}>
               {[
                 { title: 'HARGA YANG RASIONAL', desc: 'Kamu tetap bisa dapetin barang berkualitas tanpa bikin dompet menjerit.', icon: 'pricetag-outline' },
                 { title: 'BARANG NGGAK ASAL', desc: 'Semua barang udah dicek – bebas cacat, asli, dan pastinya masih kece.', icon: 'checkmark-done-outline' },
@@ -69,7 +78,7 @@ export default function HomePage() {
                   <View style={{ alignItems: 'flex-start' }}>
                     <Ionicons name={item.icon as any} size={24} color="#fff" />
                     <Text></Text>
-                    <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold', marginBottom: 4, fontFamily: 'Montage'}}>{item.title}</Text>
+                    <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold', marginBottom: 4, fontFamily: 'Montage' }}>{item.title}</Text>
                     <Text style={{ color: '#fff', fontSize: 9, fontFamily: 'Poppins' }}>{item.desc}</Text>
                   </View>
                 </LinearGradient>
