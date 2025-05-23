@@ -10,7 +10,14 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [rememberMe, setRememberMe] = useState(false);
+  const [email, setEmail] = useState<string|undefined>();
+  const [password, setPassword] = useState<string|undefined>();
+
+  const onBtnMasukPressed = () => {
+    console.log("Tombol Masuk Ditekan");
+    console.log("Email :", email, " ; Password : ", password);
+    router.push('/home');
+  }
 
   return (
     <LinearGradient
@@ -41,14 +48,20 @@ export default function LoginPage() {
             placeholder="johndoe@mail.com"
             icon={Mail}
             keyboardType="email-address"
+            onChangeText={(value) => {
+                setEmail(value)
+            }} 
           />
         </View>
         <View>
           <Text style={styles.inputText}>Kata Sandi</Text>
           <GradientInput
-            placeholder="johndoe@mail.com"
+            placeholder="********"
             icon={LockKeyhole}
-            keyboardType="email-address"
+            secureTextEntry={true}
+            onChangeText={(value) => {
+                setPassword(value)
+            }} 
           />
         </View>
         <View>
@@ -66,7 +79,7 @@ export default function LoginPage() {
           <GradientButton
             title="Masuk"
             onPress={() => {
-              router.push("/(tabs)/home"), console.log("Tombol masuk ditekan");
+              onBtnMasukPressed();
             }}
             style={{ marginBottom: 16 }}
           />
@@ -95,13 +108,17 @@ export default function LoginPage() {
             <Text style={{ color: "#220593", fontSize: 14, textAlign: "center", fontFamily: "Poppins-Regular" }}>
               Belum punya akun?{" "}
               <Text style={{ fontFamily: "Poppins-Semibold" }}>Daftar</Text>
+              {/* Nanti kita tembak web */}
             </Text>
           </TouchableOpacity>
         </View>
       </View>
     </LinearGradient>
   );
+  
+  
 }
+
 
 const styles = StyleSheet.create({
   container: {
