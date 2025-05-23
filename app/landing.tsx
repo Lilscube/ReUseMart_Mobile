@@ -12,7 +12,8 @@ export default function Landing() {
   return (
     <LinearGradient
       colors={["#26C2FF", "#220593"]}
-      start={{ x: 0, y: 0 }}
+      locations={[0.01, 0.9]} 
+      start={{ x: 1, y: 0 }}
       end={{ x: 0, y: 1 }}
       style={styles.container}
     >
@@ -30,7 +31,7 @@ export default function Landing() {
           kamu bawa pulang
         </Text>
 
-        <WhiteButton title="Mulai" onPress={() => router.push("/pages/login")} />
+        <WhiteButton title="Mulai" onPress={() => router.push("/login")} />
       </View>
     </LinearGradient>
   );
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     transform: [{ scaleX: -1 }, { rotate: "18deg" }],
     position: "relative",
-    top: 90,
+    top: 120,
     left: -90,
   },
 
@@ -84,13 +85,13 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontFamily: "Montage",
     textAlign: "left",
-    marginBottom: 16,
+    marginBottom: 10,
   },
 
   subtitle: {
-    fontSize: 14,
+    fontSize: 16,
     color: "#fff",
-    fontFamily: "Poppins-Semibold",
-    marginBottom: 24,
+    fontFamily: "Poppins-Regular",
+    marginBottom: 41,
   },
 });

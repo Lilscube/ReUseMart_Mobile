@@ -77,7 +77,6 @@ export default function HomePage() {
                 <LinearGradient key={index} colors={['#220593', '#26C2FF']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ flex: 1, marginRight: index < 2 ? 8 : 0, borderRadius: 20, padding: 12 }}>
                   <View style={{ alignItems: 'flex-start' }}>
                     <Ionicons name={item.icon as any} size={24} color="#fff" />
-                    <Text></Text>
                     <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold', marginBottom: 4, fontFamily: 'Montage' }}>{item.title}</Text>
                     <Text style={{ color: '#fff', fontSize: 9, fontFamily: 'Poppins' }}>{item.desc}</Text>
                   </View>

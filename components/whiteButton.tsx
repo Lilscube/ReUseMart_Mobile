@@ -1,5 +1,11 @@
-import React from 'react';
-import { GestureResponderEvent, StyleSheet, Text, TouchableOpacity, ViewStyle } from 'react-native';
+import React from "react";
+import {
+    GestureResponderEvent,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    ViewStyle,
+} from "react-native";
 
 interface Props {
   title: string;
@@ -19,14 +25,13 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#fff",
     paddingVertical: 12,
-    borderRadius: 30,
+    borderRadius: 40,
     alignItems: "center",
   },
 
   buttonText: {
     color: "#220593",
     fontSize: 16,
-    fontWeight: 700,
     fontFamily: "Poppins-Semibold",
   },
 });
