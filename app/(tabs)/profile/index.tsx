@@ -63,7 +63,12 @@ export default function ProfileScreen() {
             />
             <View>
               <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 8, maxWidth: 220 }}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 8,
+                  maxWidth: 220,
+                }}
               >
                 <Text style={{ marginBottom: 4 }}>
                   <UserRound color={"#fff"} size={18} />

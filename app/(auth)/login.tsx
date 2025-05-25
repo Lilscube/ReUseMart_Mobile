@@ -91,7 +91,7 @@ export default function LoginPage() {
             }}
           >
             <View style={{ flex: 1, height: 1, backgroundColor: "#000" }} />
-            <Text style={{ marginHorizontal: 20, color: "#000" }}>Atau</Text>
+            <Text style={{ marginHorizontal: 20, color: "#000", fontFamily: "Poppins-Regular" }}>Atau</Text>
             <View style={{ flex: 1, height: 1, backgroundColor: "#000" }} />
           </View>
           <GradientOutlineButton
