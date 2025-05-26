@@ -1,6 +1,7 @@
-import { Barang } from "@/app/model/Product";
 import ProductCard from "@/components/ProductCard";
 import GradientInput from "@/components/gradientInput";
+import { BASE_URL } from "@/config/config";
+import { Barang } from "@/model/Product";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import {
@@ -48,7 +49,7 @@ export default function HomePage() {
   ];
 
   useEffect(() => {
-    fetch("http://192.168.100.28:3000/api/barang")
+    fetch(`${BASE_URL}/barang`)
       .then((res) => res.json())
       .then((data) => {
         setBarangList(data.barang || []);
@@ -91,30 +92,34 @@ export default function HomePage() {
                   locations={[0.01, 0.9]}
                   start={{ x: 1, y: 0 }}
                   end={{ x: 0, y: 0 }}
-                  style={{ padding: 24 }}
+                  style={{ padding: 24, height: 135 }}
                 >
                   <View>
-                    <Text
-                      style={[
-                        styles.normalText,
-                        { marginTop: 16, color: "#fff" },
-                      ]}
-                    >
-                      Selamat pagi,
-                    </Text>
-                    <Text style={[styles.title, { color: "#fff" }]}>
-                      Pasha Rakha Paruntung
-                    </Text>
+                    <View>
+                      <Text
+                        style={[
+                          styles.normalText,
+                          { marginTop: 16, color: "#fff" },
+                        ]}
+                      >
+                        Selamat pagi,
+                      </Text>
+                      <Text style={[styles.title, { color: "#fff" }]}>
+                        Pasha Rakha Paruntung
+                      </Text>
+                    </View>
                   </View>
                   <GradientInput
                     placeholder="Cari apa hari ini?"
-                    onChangeText={(value) => {
-                      console.log("Test aja");
+                    onChangeText={(value) => {}}
+                    containerStyle={{
+                      position: "relative",
+                      top: 15,
                     }}
                   />
                 </LinearGradient>
               </View>
-              <View style={styles.container}>
+              <View style={[styles.container, { paddingTop: 44 }]}>
                 <View style={styles.section}>
                   <View
                     style={[
@@ -265,7 +270,7 @@ const styles = StyleSheet.create({
   },
 
   iconText: {
-    width: 72,
+    width: 64,
     fontSize: 12,
     textAlign: "center",
   },

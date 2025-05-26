@@ -1,23 +1,57 @@
+// import { BASE_URL_AUTH } from "@/app/config";
 import GradientButton from "@/components/gradientButton";
 import GradientInput from "@/components/gradientInput";
 import GradientOutlineButton from "@/components/gradientOutlineButton";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
+
 import { LockKeyhole, Mail } from "lucide-react-native";
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState<string|undefined>();
-  const [password, setPassword] = useState<string|undefined>();
+  const [email, setEmail] = useState<string | undefined>();
+  const [password, setPassword] = useState<string | undefined>();
+
+  const handleLogin = async () => {
+    // try {
+    //   const response = await fetch(`${BASE_URL_AUTH}/login`, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({ email, password }),
+    //   });
+
+    //   const data = await response.json();
+
+    //   if (response.ok && data.success) {
+    //     console.log("Login berhasil:", data);
+
+    //     await AsyncStorage.setItem("token", data.token);
+
+    //     router.replace("/home");
+    //   } else {
+    //     alert(data.message || "Login gagal");
+    //   }
+    // } catch (err) {
+    //   console.error("Login error:", err);
+    //   alert("Terjadi kesalahan saat login");
+    // }
+  };
 
   const onBtnMasukPressed = () => {
+    if (!email || !password) {
+      alert("Email dan password wajib diisi!");
+      return;
+    }
+
     console.log("Tombol Masuk Ditekan");
     console.log("Email :", email, " ; Password : ", password);
-    router.push('/home');
-  }
+    handleLogin();
+  };
 
   return (
     <LinearGradient
@@ -49,8 +83,8 @@ export default function LoginPage() {
             icon={Mail}
             keyboardType="email-address"
             onChangeText={(value) => {
-                setEmail(value)
-            }} 
+              setEmail(value);
+            }}
           />
         </View>
         <View>
@@ -60,8 +94,8 @@ export default function LoginPage() {
             icon={LockKeyhole}
             secureTextEntry={true}
             onChangeText={(value) => {
-                setPassword(value)
-            }} 
+              setPassword(value);
+            }}
           />
         </View>
         <View>
@@ -91,23 +125,54 @@ export default function LoginPage() {
             }}
           >
             <View style={{ flex: 1, height: 1, backgroundColor: "#000" }} />
-            <Text style={{ marginHorizontal: 20, color: "#000", fontFamily: "Poppins-Regular" }}>Atau</Text>
+            <Text
+              style={{
+                marginHorizontal: 20,
+                color: "#000",
+                fontFamily: "Poppins-Regular",
+              }}
+            >
+              Atau
+            </Text>
             <View style={{ flex: 1, height: 1, backgroundColor: "#000" }} />
           </View>
           <GradientOutlineButton
             title="Masuk dengan Google"
-            onPress={() => {console.log("Tombol masuk dengan Google ditekan");
+            onPress={() => {
+              console.log("Tombol masuk dengan Google ditekan");
             }}
             size="default"
-            style={{marginBottom: 16}}
+            style={{ marginBottom: 16 }}
           />
         </View>
 
         <View>
-          <TouchableOpacity>
-            <Text style={{ color: "#220593", fontSize: 14, textAlign: "center", fontFamily: "Poppins-Regular" }}>
+          <TouchableOpacity style={{ marginBottom: 12 }}>
+            <Text
+              style={{
+                color: "#220593",
+                fontSize: 14,
+                textAlign: "center",
+                fontFamily: "Poppins-Regular",
+              }}
+            >
               Belum punya akun?{" "}
               <Text style={{ fontFamily: "Poppins-Semibold" }}>Daftar</Text>
+              {/* Nanti kita tembak web */}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text
+              style={{
+                color: "#220593",
+                fontSize: 14,
+                textAlign: "center",
+                fontFamily: "Poppins-Regular",
+              }}
+            >
+              <Text style={{ fontFamily: "Poppins-Semibold" }}>
+                Masuk sebagai Pegawai
+              </Text>
               {/* Nanti kita tembak web */}
             </Text>
           </TouchableOpacity>
@@ -115,10 +180,7 @@ export default function LoginPage() {
       </View>
     </LinearGradient>
   );
-  
-  
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -127,7 +189,11 @@ const styles = StyleSheet.create({
   },
 
   topContainer: {
-    marginBottom: 70,
+    // borderColor: "red",
+    // borderWidth: 1,
+    flex: 1,
+    justifyContent: "center",
+    paddingTop: 40,
     marginHorizontal: 24,
   },
 
@@ -146,7 +212,7 @@ const styles = StyleSheet.create({
   },
 
   bottomContainer: {
-    height: "65%",
+    height: "67%",
     backgroundColor: "#fff",
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,

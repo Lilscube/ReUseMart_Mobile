@@ -1,4 +1,4 @@
-import { Barang } from "@/app/model/Product";
+import { Barang } from "@/model/Product";
 import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 
