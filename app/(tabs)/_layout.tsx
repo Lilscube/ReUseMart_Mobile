@@ -28,7 +28,7 @@ export default function TabLayout() {
           switch (route.name) {
             case "home/index":
               return <Home color={color} size={24} />;
-            case "claim/index":
+            case "merchandise/index":
               return <Gift color={color} size={24} />;
             case "profile/index":
               return <User color={color} size={24} />;
@@ -62,7 +62,7 @@ export default function TabLayout() {
       })}
     >
       <Tabs.Screen name="home/index" options={{ title: "Beranda" }} />
-      <Tabs.Screen name="claim/index" options={{ title: "Merch" }} />
+      <Tabs.Screen name="merchandise/index" options={{ title: "Merchandise" }} />
       <Tabs.Screen name="profile/index" options={{ title: "Profil" }} />
     </Tabs>
   );
@@ -72,7 +72,7 @@ const getTabLabel = (routeName: string) => {
   switch (routeName) {
     case "home/index":
       return "Beranda";
-    case "claim/index":
+    case "merchandise/index":
       return "Merch";
     case "profile/index":
       return "Profil";
