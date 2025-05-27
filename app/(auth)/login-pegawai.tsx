@@ -1,14 +1,19 @@
 import GradientButton from "@/components/gradientButton";
 import GradientInput from "@/components/gradientInput";
 import GradientOutlineButton from "@/components/gradientOutlineButton";
-import { API_BASE_URL, BASE_URL_AUTH } from "@/config/config";
+import { BASE_URL_AUTH } from "@/config/config";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { LockKeyhole, Mail } from "lucide-react-native";
 import React, { useState } from "react";
-import { Linking, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
+} from "react-native";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -17,7 +22,7 @@ export default function LoginPage() {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch(`${BASE_URL_AUTH}/login`, {
+      const response = await fetch(`${BASE_URL_AUTH}/login/by-pegawai`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,9 +71,9 @@ export default function LoginPage() {
       </TouchableOpacity>
 
       <View style={styles.topContainer}>
-        <Text style={styles.title}>MASUK AJA DULU</Text>
+        <Text style={styles.title}>Selamat datang kembali, prajurit</Text>
         <Text style={styles.subtitle}>
-          Login sekarang lalu lanjut eksplor barang-barang kece di ReUseMart.
+          Yuk, login dulu biar bisa lanjut bantu jaga barang tetap bermanfaat.
         </Text>
       </View>
 
@@ -96,23 +101,12 @@ export default function LoginPage() {
           />
         </View>
         <View>
-          <Text
-            style={{
-              textAlign: "right",
-              fontFamily: "Poppins-Semibold",
-              fontSize: 14,
-              color: "#220593",
-              marginBottom: 16,
-            }}
-          >
-            Lupa Password?
-          </Text>
           <GradientButton
             title="Masuk"
             onPress={() => {
               onBtnMasukPressed();
             }}
-            style={{ marginBottom: 16 }}
+            style={{ marginVertical: 16 }}
             size="default"
           />
           <View
@@ -144,41 +138,24 @@ export default function LoginPage() {
           />
         </View>
 
-        <View>
-          <TouchableOpacity
-            onPress={() =>
-              Linking.openURL(`${API_BASE_URL}/register`)
-            } 
-            style={{ marginBottom: 12 }}
+        <TouchableOpacity
+          onPress={() => router.push("/login")}
+          style={{ marginBottom: 12 }}
+        >
+          <Text
+            style={{
+              color: "#220593",
+              fontSize: 14,
+              textAlign: "center",
+              fontFamily: "Poppins-Regular",
+            }}
           >
-            <Text
-              style={{
-                color: "#220593",
-                fontSize: 14,
-                textAlign: "center",
-                fontFamily: "Poppins-Regular",
-              }}
-            >
-              Belum punya akun?{" "}
-              <Text style={{ fontFamily: "Poppins-Semibold" }}>Daftar</Text>
-              {/* Nanti kita tembak web */}
+            Bukan mitra?{" "}
+            <Text style={{ fontFamily: "Poppins-Semibold" }}>
+              Masuk seperti biasa
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push("/login-pegawai")}>
-            <Text
-              style={{
-                color: "#220593",
-                fontSize: 14,
-                textAlign: "center",
-                fontFamily: "Poppins-Regular",
-              }}
-            >
-              <Text style={{ fontFamily: "Poppins-Semibold" }}>
-                Masuk sebagai Pegawai
-              </Text>
-            </Text>
-          </TouchableOpacity>
-        </View>
+          </Text>
+        </TouchableOpacity>
       </View>
     </LinearGradient>
   );
@@ -191,8 +168,6 @@ const styles = StyleSheet.create({
   },
 
   topContainer: {
-    // borderColor: "red",
-    // borderWidth: 1,
     flex: 1,
     justifyContent: "center",
     paddingTop: 40,
@@ -200,8 +175,9 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 60,
+    fontSize: 56,
     color: "#fff",
+    textTransform: "uppercase",
     fontFamily: "Montage",
     textAlign: "left",
     marginBottom: 8,
@@ -214,7 +190,7 @@ const styles = StyleSheet.create({
   },
 
   bottomContainer: {
-    height: "67%",
+    height: "62%",
     backgroundColor: "#fff",
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,

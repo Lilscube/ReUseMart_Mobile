@@ -1,8 +1,13 @@
 import Divider from "@/components/divider";
-import { useFocusEffect } from "@react-navigation/native";
-
+import GradientButton from "@/components/gradientButton";
 import GradientOutlineButton from "@/components/gradientOutlineButton";
+import { getCurrentUser } from "@/config/user/getCurrentUser";
+import { logoutUser } from "@/config/user/logout";
+import { UserModel } from "@/model/User";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
 import {
     Bell,
     ChevronRight,
@@ -14,25 +19,50 @@ import {
     User,
     UserRound,
 } from "lucide-react-native";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     Image,
+    Modal,
     SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View,
+    View
 } from "react-native";
 
 export default function ProfileScreen() {
+  const router = useRouter();
+
   const scrollRef = useRef<ScrollView>(null);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  const [user, setUser] = useState<UserModel | null>(null);
+
+  useEffect(() => {
+    AsyncStorage.getItem("token").then((token) => {
+      if (!token) {
+        router.replace("/login");
+      } else {
+        getCurrentUser()
+          .then(setUser)
+          .catch((err) => {
+            console.error("Gagal ambil user:", err.message);
+            router.replace("/login");
+          });
+      }
+    });
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
       scrollRef.current?.scrollTo({ y: 0, animated: true });
     }, [])
   );
+
+  function handleLogout() {
+    setShowLogoutModal(true);
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -51,7 +81,11 @@ export default function ProfileScreen() {
           <Text style={[styles.title, { marginTop: 16 }]}>Profil</Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
             <Image
-              source={require("@/assets/images/pasha.jpg")}
+              source={{
+                uri:
+                  user?.src_img_profile ||
+                  "https://i.pinimg.com/736x/18/c2/f6/18c2f6cd7a987c800e4ebd035ab91a3c.jpg",
+              }}
               style={{
                 width: 100,
                 height: 100,
@@ -78,7 +112,7 @@ export default function ProfileScreen() {
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
-                  Pasha Rakha Paruntungasdf
+                  {user?.nama || "Nama Pengguna"}
                 </Text>
               </View>
               <View
@@ -87,7 +121,9 @@ export default function ProfileScreen() {
                 <Text style={{ marginBottom: 4 }}>
                   <Sparkles color={"#fff"} size={16} />
                 </Text>
-                <Text style={styles.subtitle}>3.210 Reusepoint</Text>
+                <Text style={styles.subtitle}>
+                  {user?.poin_loyalitas || "0"} Reusepoint{" "}
+                </Text>
               </View>
             </View>
           </View>
@@ -140,18 +176,26 @@ export default function ProfileScreen() {
           {/* Data Pribadi */}
           <View style={styles.section}>
             <Text style={[styles.title, { color: "#000" }]}>Data Pribadi</Text>
-            <View style={styles.inputField}>
-              <User size={16} color="#000" />
-              <Text style={styles.inputText}> I Putu Anjes Vernanda</Text>
-            </View>
-            <View style={styles.inputField}>
-              <Mail size={16} color="#000" />
-              <Text style={styles.inputText}> anjesganteng@gmail.com</Text>
-            </View>
-            <View style={styles.inputField}>
-              <Phone size={16} color="#000" />
-              <Text style={styles.inputText}> 081234567890</Text>
-            </View>
+            {[
+              {
+                icon: <User size={16} color="#000" />,
+                value: user?.nama || "-",
+              },
+              {
+                icon: <Mail size={16} color="#000" />,
+                value: user?.email || "-",
+              },
+              {
+                icon: <Phone size={16} color="#000" />,
+                value: user?.no_telepon || "-",
+              },
+            ].map((item, index) => (
+              <View style={styles.inputField} key={index}>
+                {item.icon}
+                <Text style={styles.inputText}> {item.value}</Text>
+              </View>
+            ))}
+
             <GradientOutlineButton
               title="Edit Profil"
               onPress={() => {
@@ -169,10 +213,20 @@ export default function ProfileScreen() {
             {[
               { icon: <History size={18} />, label: "History Transaksi" },
               { icon: <Bell size={18} />, label: "Pengaturan Notifikasi" },
-              { icon: <LogOut size={18} />, label: "Logout (Switch Account)" },
+              {
+                icon: <LogOut size={18} />,
+                label: "Logout",
+                onPress: async () => {
+                  handleLogout();
+                },
+                text_styles: { color: "red" },
+              },
             ].map((item, index) => (
               <View style={styles.shadowWrapper} key={index}>
-                <TouchableOpacity style={styles.menuItem}>
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  onPress={item.onPress}
+                >
                   <View
                     style={{
                       flexDirection: "row",
@@ -196,6 +250,58 @@ export default function ProfileScreen() {
             ))}
           </View>
         </View>
+        <Modal
+          transparent
+          visible={showLogoutModal}
+          animationType="fade"
+          onRequestClose={() => setShowLogoutModal(false)}
+        >
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "rgba(0,0,0,0.4)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <View style={styles.modal}>
+              <Text
+                style={{
+                  fontFamily: "Poppins-Semibold",
+                  fontSize: 16,
+                  marginBottom: 12,
+                }}
+              >
+                Yakin ingin logout?
+              </Text>
+              <View style={{ flexDirection: "row", gap: 16 }}>
+                <View
+                  style={{ width: "50%" }}
+                >
+                  <GradientOutlineButton
+                    title="Logout"
+                    onPress={async () => {
+                      await logoutUser();
+                      setShowLogoutModal(false);
+                      router.replace("/login");
+                    }}
+                    size="small"
+                    variant="danger"
+                  />
+                </View>
+                <View
+                  style={{ width: "50%" }}
+                >
+                  <GradientButton
+                    title="Batal"
+                    onPress={() => setShowLogoutModal(false)}
+                    size="small"
+                  />
+                </View>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
     </SafeAreaView>
   );
@@ -203,8 +309,6 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    // borderColor: "red",
-    // borderWidth: 1,
     padding: 24,
     gap: 24,
   },
@@ -228,8 +332,6 @@ const styles = StyleSheet.create({
   },
 
   section: {
-    // borderColor: "green",
-    // borderWidth: 1,
     gap: 8,
   },
 
@@ -286,7 +388,8 @@ const styles = StyleSheet.create({
   inputField: {
     backgroundColor: "#fff",
     borderRadius: 24,
-    padding: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 8,
@@ -306,7 +409,6 @@ const styles = StyleSheet.create({
   shadowWrapper: {
     backgroundColor: "#fff",
     borderRadius: 24,
-    padding: 14,
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 8,
@@ -318,9 +420,11 @@ const styles = StyleSheet.create({
 
   menuItem: {
     borderRadius: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     flexDirection: "row",
     alignItems: "center",
-    overflow: "hidden", // penting agar isi mengikuti radius
+    overflow: "hidden",
   },
 
   menuText: {
@@ -328,5 +432,13 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins-Regular",
     color: "#000",
     marginLeft: 8,
+  },
+
+  modal: {
+    backgroundColor: "white",
+    borderRadius: 16,
+    padding: 24,
+    width: "80%",
+    alignItems: "center",
   },
 });

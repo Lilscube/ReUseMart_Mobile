@@ -1,11 +1,16 @@
 import ProductCard from "@/components/ProductCard";
 import GradientInput from "@/components/gradientInput";
-import { BASE_URL } from "@/config/config";
+import { BASE_URL_API } from "@/config/config";
+import { getCurrentUser } from "@/config/user/getCurrentUser";
 import { Barang } from "@/model/Product";
+import { UserModel } from "@/model/User";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import {
     Baby,
+    Bell,
     BookOpenText,
     BriefcaseBusiness,
     CarFront,
@@ -30,6 +35,7 @@ import {
 
 export default function HomePage() {
   const router = useRouter();
+  const [user, setUser] = useState<UserModel | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [BarangList, setBarangList] = useState<Barang[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,8 +54,26 @@ export default function HomePage() {
     { name: "Furniture" },
   ];
 
+  useFocusEffect(
+    React.useCallback(() => {
+      AsyncStorage.getItem("token").then((token) => {
+        if (!token) {
+          setUser(null);
+          router.replace("/login");
+        } else {
+          getCurrentUser()
+            .then(setUser)
+            .catch((err) => {
+              console.error("Gagal ambil user:", err.message);
+              router.replace("/login");
+            });
+        }
+      });
+    }, [])
+  );
+
   useEffect(() => {
-    fetch(`${BASE_URL}/barang`)
+    fetch(`${BASE_URL_API}/barang`)
       .then((res) => res.json())
       .then((data) => {
         setBarangList(data.barang || []);
@@ -64,6 +88,14 @@ export default function HomePage() {
   const filteredProducts = BarangList.filter((product) =>
     product.nama_barang.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  function getGreeting() {
+    const hour = new Date().getHours();
+    if (hour >= 4 && hour < 11) return "Selamat pagi";
+    if (hour >= 11 && hour < 15) return "Selamat siang";
+    if (hour >= 15 && hour < 18) return "Selamat sore";
+    return "Selamat malam";
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -86,35 +118,40 @@ export default function HomePage() {
           contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 24 }}
           ListHeaderComponent={
             <>
-              <View style={{ marginHorizontal: -24 }}>
+              <View style={{ marginHorizontal: -25 }}>
                 <LinearGradient
                   colors={["#26C2FF", "#220593"]}
                   locations={[0.01, 0.9]}
                   start={{ x: 1, y: 0 }}
                   end={{ x: 0, y: 0 }}
-                  style={{ padding: 24, height: 135 }}
+                  style={{
+                    paddingVertical: 32,
+                    paddingHorizontal: 24,
+                    height: 135,
+                  }}
                 >
                   <View>
-                    <View>
+                    <View  style={{ flexDirection: "row", gap: 16, justifyContent: "space-between" ,alignItems: "center",  marginTop: 16}}>
                       <Text
                         style={[
                           styles.normalText,
-                          { marginTop: 16, color: "#fff" },
+                          { color: "#fff" },
                         ]}
                       >
-                        Selamat pagi,
+                        {getGreeting()},
                       </Text>
-                      <Text style={[styles.title, { color: "#fff" }]}>
-                        Pasha Rakha Paruntung
-                      </Text>
+                    <Bell color={"#fff"} size={24} />
                     </View>
+                      <Text style={[styles.title, { color: "#fff" }]}>
+                        {user?.nama || "Guest"}
+                      </Text>
                   </View>
                   <GradientInput
                     placeholder="Cari apa hari ini?"
                     onChangeText={(value) => {}}
                     containerStyle={{
                       position: "relative",
-                      top: 15,
+                      top: 10,
                     }}
                   />
                 </LinearGradient>
@@ -244,8 +281,6 @@ const styles = StyleSheet.create({
   },
 
   section: {
-    // borderColor: "red",
-    // borderWidth: 1,
     gap: 8,
   },
 
