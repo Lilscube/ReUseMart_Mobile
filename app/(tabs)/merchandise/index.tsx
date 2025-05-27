@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList, Image, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import React, { useState } from 'react';
+import { FlatList, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 
 export default function ClaimPage() {
   const [claimed, setClaimed] = useState<string[]>([]);
