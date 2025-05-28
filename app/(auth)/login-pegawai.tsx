@@ -1,7 +1,7 @@
-import GradientButton from "@/components/gradientButton";
-import GradientInput from "@/components/gradientInput";
-import GradientOutlineButton from "@/components/gradientOutlineButton";
-import { BASE_URL_AUTH } from "@/config/config";
+import { BASE_URL_AUTH } from "@/auth/config";
+import GradientButton from "@/components/GradientButton";
+import GradientInput from "@/components/GradientInput";
+import GradientOutlineButton from "@/components/GradientOutlineButton";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";

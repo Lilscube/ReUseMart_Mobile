@@ -1,4 +1,4 @@
-import { BASE_URL_AUTH } from "@/config/config";
+import { BASE_URL_AUTH } from "@/auth/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export async function getCurrentUser() {
@@ -24,5 +24,14 @@ export async function getCurrentUser() {
   } catch (error) {
     console.error("Error in getCurrentUser:", error);
     throw new Error("Failed to get current user");
+  }
+}
+
+export async function logoutUser() {
+  try {
+    await AsyncStorage.removeItem("token");
+    console.log("User logged out successfully");
+  } catch (error) {
+    console.error("Logout failed:", error);
   }
 }
