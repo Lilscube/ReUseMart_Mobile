@@ -1,4 +1,4 @@
-import { BASE_URL_AUTH } from "@/auth/config";
+import { BASE_URL_AUTH } from "@/context/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export async function getCurrentUser() {

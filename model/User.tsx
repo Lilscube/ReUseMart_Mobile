@@ -3,7 +3,7 @@ export interface UserModel {
   nama: string;
   email: string;
   no_telepon: string;
-  role: "penitip" | "pembeli" | "pegawai" | "organisasi";
+  role: "penitip" | "pembeli" | "pegawai";
   src_img_profile?: string;
   poin_loyalitas?: number;
 }

@@ -1,7 +1,7 @@
-import { getCurrentUser } from "@/auth/AuthUser";
-import { BASE_URL_API } from "@/auth/config";
 import GradientInput from "@/components/GradientInput";
 import ProductCard from "@/components/ProductCard";
+import { getCurrentUser } from "@/context/UserContext";
+import { BASE_URL_API } from "@/context/config";
 import { Barang } from "@/model/Product";
 import { UserModel } from "@/model/User";
 import AsyncStorage from "@react-native-async-storage/async-storage";
