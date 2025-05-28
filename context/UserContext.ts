@@ -20,6 +20,7 @@ export async function getCurrentUser() {
     }
 
     const data = await res.json();
+    console.log("Dari getCurrentUser: ", data.user);
     return data.user;
   } catch (error) {
     console.error("Error in getCurrentUser:", error);

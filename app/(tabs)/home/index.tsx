@@ -1,5 +1,6 @@
 import GradientInput from "@/components/GradientInput";
 import ProductCard from "@/components/ProductCard";
+import WithRole from "@/components/WithRole";
 import { getCurrentUser } from "@/context/UserContext";
 import { BASE_URL_API } from "@/context/config";
 import { Barang } from "@/model/Product";
@@ -62,7 +63,10 @@ export default function HomePage() {
           router.replace("/login");
         } else {
           getCurrentUser()
-            .then(setUser)
+            .then((u) => {
+              console.log("User fetched:", u);
+              setUser(u);
+            })
             .catch((err) => {
               console.error("Gagal ambil user:", err.message);
               router.replace("/login");
@@ -98,162 +102,167 @@ export default function HomePage() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      {loading ? (
-        <ActivityIndicator
-          size="large"
-          color="#26C2FF"
-          style={{ marginTop: 50 }}
-        />
-      ) : (
-        <FlatList
-          data={filteredProducts}
-          keyExtractor={(item) => item.id_barang.toString()}
-          numColumns={2}
-          columnWrapperStyle={{
-            justifyContent: "space-between",
-            marginBottom: 15,
-          }}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 24 }}
-          ListHeaderComponent={
-            <>
-              <View style={{ marginHorizontal: -25 }}>
-                <LinearGradient
-                  colors={["#26C2FF", "#220593"]}
-                  locations={[0.01, 0.9]}
-                  start={{ x: 1, y: 0 }}
-                  end={{ x: 0, y: 0 }}
-                  style={{
-                    paddingVertical: 32,
-                    paddingHorizontal: 24,
-                    height: 135,
-                  }}
-                >
-                  <View>
-                    <View  style={{ flexDirection: "row", gap: 16, justifyContent: "space-between" ,alignItems: "center",  marginTop: 16}}>
-                      <Text
-                        style={[
-                          styles.normalText,
-                          { color: "#fff" },
-                        ]}
-                      >
-                        {getGreeting()},
-                      </Text>
-                    <Bell color={"#fff"} size={24} />
-                    </View>
-                      <Text style={[styles.title, { color: "#fff" }]}>
-                        {user?.nama || "Guest"}
-                      </Text>
-                  </View>
-                  <GradientInput
-                    placeholder="Cari apa hari ini?"
-                    onChangeText={(value) => {}}
-                    containerStyle={{
-                      position: "relative",
-                      top: 10,
+    <WithRole allowed={["pembeli", "penitip"]}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+        {loading ? (
+            <ActivityIndicator
+            size="large"
+            color="#26C2FF"
+            style={{ marginTop: 50 }}
+            />
+        ) : (
+            <FlatList
+            data={filteredProducts}
+            keyExtractor={(item) => item.id_barang.toString()}
+            numColumns={2}
+            columnWrapperStyle={{
+                justifyContent: "space-between",
+                marginBottom: 15,
+            }}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 24 }}
+            ListHeaderComponent={
+                <>
+                <View style={{ marginHorizontal: -25 }}>
+                    <LinearGradient
+                    colors={["#26C2FF", "#220593"]}
+                    locations={[0.01, 0.9]}
+                    start={{ x: 1, y: 0 }}
+                    end={{ x: 0, y: 0 }}
+                    style={{
+                        paddingVertical: 32,
+                        paddingHorizontal: 24,
+                        height: 135,
                     }}
-                  />
-                </LinearGradient>
-              </View>
-              <View style={[styles.container, { paddingTop: 44 }]}>
-                <View style={styles.section}>
-                  <View
-                    style={[
-                      styles.imagePlaceholder,
-                      {
-                        height: 120,
-                        justifyContent: "center",
-                        alignItems: "center",
-                      },
-                    ]}
-                  >
-                    <Text>Ini Banner Iklan</Text>
-                  </View>
-                </View>
-                <View style={styles.section}>
-                  <Text style={[styles.title, { color: "#000" }]}>
-                    Kategori
-                  </Text>
-                  <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{ gap: 12 }}
-                  >
-                    {[
-                      {
-                        name: "Interior & Utensil",
-                        icon: Sofa,
-                      },
-                      {
-                        name: "Elektronik & Gadget",
-                        icon: Headphones,
-                      },
-                      {
-                        name: "Buku, Alat Tulis, & Peralatan Sekolah",
-                        icon: BookOpenText,
-                      },
-                      {
-                        name: "Hobi, Mainan, & Koleksi",
-                        icon: Guitar,
-                      },
-                      {
-                        name: "Pakaian & Aksesoris",
-                        icon: Shirt,
-                      },
-                      {
-                        name: "Perlengkapan Taman & Outdoor",
-                        icon: Leaf,
-                      },
-                      {
-                        name: "Otomotif",
-                        icon: CarFront,
-                      },
-                      {
-                        name: "Perlengkapan Bayi & Anak",
-                        icon: Baby,
-                      },
-                      {
-                        name: "Peralatan Kantor & Industri",
-                        icon: BriefcaseBusiness,
-                      },
-                      {
-                        name: "Kosmetik & Perawatan Diri",
-                        icon: Gem,
-                      },
-                    ].map((item, index) => {
-                      const Icon = item.icon;
-                      return (
-                        <View key={index} style={styles.iconContainer}>
-                          <View style={styles.iconCircle}>
-                            <Icon size={24} color="#220593" />
-                          </View>
-                          <Text
-                            style={[styles.normalText, styles.iconText]}
-                            numberOfLines={2}
-                            ellipsizeMode="tail"
-                          >
-                            {item.name}
-                          </Text>
+                    >
+                    <View>
+                        <View
+                        style={{
+                            flexDirection: "row",
+                            gap: 16,
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            marginTop: 16,
+                        }}
+                        >
+                        <Text style={[styles.normalText, { color: "#fff" }]}>
+                            {getGreeting()},
+                        </Text>
+                        <Bell color={"#fff"} size={24} />
                         </View>
-                      );
-                    })}
-                  </ScrollView>
+                        <Text style={[styles.title, { color: "#fff" }]}>
+                        {user?.nama || "Guest"}
+                        </Text>
+                    </View>
+                    <GradientInput
+                        placeholder="Cari apa hari ini?"
+                        onChangeText={(value) => {}}
+                        containerStyle={{
+                        position: "relative",
+                        top: 10,
+                        }}
+                    />
+                    </LinearGradient>
                 </View>
-                <View style={styles.section}>
-                  <Text style={[styles.title, { color: "#000" }]}>
-                    Untuk Kamu
-                  </Text>
+                <View style={[styles.container, { paddingTop: 44 }]}>
+                    <View style={styles.section}>
+                    <View
+                        style={[
+                        styles.imagePlaceholder,
+                        {
+                            height: 120,
+                            justifyContent: "center",
+                            alignItems: "center",
+                        },
+                        ]}
+                    >
+                        <Text>Ini Banner Iklan</Text>
+                    </View>
+                    </View>
+                    <View style={styles.section}>
+                    <Text style={[styles.title, { color: "#000" }]}>
+                        Kategori
+                    </Text>
+                    <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{ gap: 12 }}
+                    >
+                        {[
+                        {
+                            name: "Interior & Utensil",
+                            icon: Sofa,
+                        },
+                        {
+                            name: "Elektronik & Gadget",
+                            icon: Headphones,
+                        },
+                        {
+                            name: "Buku, Alat Tulis, & Peralatan Sekolah",
+                            icon: BookOpenText,
+                        },
+                        {
+                            name: "Hobi, Mainan, & Koleksi",
+                            icon: Guitar,
+                        },
+                        {
+                            name: "Pakaian & Aksesoris",
+                            icon: Shirt,
+                        },
+                        {
+                            name: "Perlengkapan Taman & Outdoor",
+                            icon: Leaf,
+                        },
+                        {
+                            name: "Otomotif",
+                            icon: CarFront,
+                        },
+                        {
+                            name: "Perlengkapan Bayi & Anak",
+                            icon: Baby,
+                        },
+                        {
+                            name: "Peralatan Kantor & Industri",
+                            icon: BriefcaseBusiness,
+                        },
+                        {
+                            name: "Kosmetik & Perawatan Diri",
+                            icon: Gem,
+                        },
+                        ].map((item, index) => {
+                        const Icon = item.icon;
+                        return (
+                            <View key={index} style={styles.iconContainer}>
+                            <View style={styles.iconCircle}>
+                                <Icon size={24} color="#220593" />
+                            </View>
+                            <Text
+                                style={[styles.normalText, styles.iconText]}
+                                numberOfLines={2}
+                                ellipsizeMode="tail"
+                            >
+                                {item.name}
+                            </Text>
+                            </View>
+                        );
+                        })}
+                    </ScrollView>
+                    </View>
+                    <View style={styles.section}>
+                    <Text style={[styles.title, { color: "#000" }]}>
+                        Untuk Kamu
+                    </Text>
+                    </View>
                 </View>
-              </View>
-            </>
-          }
-          renderItem={({ item }) => (
-            <ProductCard item={item} width={itemWidth - 12} />
-          )}
-        />
-      )}
-    </SafeAreaView>
+                </>
+            }
+            renderItem={({ item }) => (
+                <ProductCard item={item} width={itemWidth - 12} />
+            )}
+            />
+        )}
+        </SafeAreaView>
+    </WithRole>
   );
 }
 
