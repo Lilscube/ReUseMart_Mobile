@@ -36,7 +36,7 @@ export default function PegawaiDashboardPage() {
 
   return (
     <View style={{ padding: 20 }}>
-      <Text style={{ fontSize: 24, fontWeight: "bold" }}>Halaman Dashboard Pegawai</Text>
+      <Text style={{ fontSize: 24, fontWeight: "bold" }}>Halaman Dashboard Kurir</Text>
       <Text>Nama: {user.nama}</Text>
       <Text>Role: {user.role}</Text>
     </View>

@@ -26,9 +26,9 @@ export default function TabLayout() {
         tabBarInactiveTintColor: "#fff",
         tabBarIcon: ({ color }) => {
           switch (route.name) {
-            case "home":
+            case "dashboard":
               return <Home color={color} size={24} />;
-            case "merch":
+            case "pengantaran":
               return <Gift color={color} size={24} />;
             case "profile":
               return <User color={color} size={24} />;
@@ -61,8 +61,8 @@ export default function TabLayout() {
         ),
       })}
     >
-      <Tabs.Screen name="home" options={{ title: "Beranda" }} />
-      <Tabs.Screen name="merch" options={{ title: "Merchandise" }} />
+      <Tabs.Screen name="dashboard" options={{ title: "Dashboard" }} />
+      <Tabs.Screen name="pengantaran" options={{ title: "Pengantaran" }} />
       <Tabs.Screen name="profile" options={{ title: "Profil" }} />
     </Tabs>
   );
@@ -70,9 +70,9 @@ export default function TabLayout() {
 
 const getTabLabel = (routeName: string) => {
   switch (routeName) {
-    case "home":
-      return "Beranda";
-    case "merch":
+    case "dashboard":
+      return "Dashboard";
+    case "pengantaran":
       return "Merch";
     case "profile":
       return "Profil";

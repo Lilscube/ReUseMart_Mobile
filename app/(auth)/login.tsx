@@ -29,8 +29,11 @@ export default function LoginPage() {
       case "penitip":
         router.replace("/(penitip)/home");
         break;
-      case "pegawai":
-        router.replace("/(pegawai)/dashboard");
+      case "kurir":
+        router.replace("/(kurir)/dashboard");
+        break;
+    case "hunter":
+        router.replace("/(hunter)/dashboard");
         break;
       default:
         alert("Role tidak dikenal, tidak bisa diarahkan.");

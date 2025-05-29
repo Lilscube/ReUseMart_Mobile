@@ -36,7 +36,7 @@ export default function PegawaiProfilePage() {
 
   return (
     <View style={{ padding: 20 }}>
-      <Text style={{ fontSize: 24, fontWeight: "bold" }}>Halaman Profil Pegawai</Text>
+      <Text style={{ fontSize: 24, fontWeight: "bold" }}>Halaman Profil Hunter</Text>
       <Text>Nama: {user.nama}</Text>
       <Text>Role: {user.role}</Text>
     </View>
