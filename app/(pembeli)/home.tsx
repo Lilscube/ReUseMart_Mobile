@@ -26,11 +26,10 @@ import {
     ActivityIndicator,
     Dimensions,
     FlatList,
-    SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
-    View,
+    View
 } from "react-native";
 
 export default function HomePage() {
@@ -98,7 +97,7 @@ export default function HomePage() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <View style={{ flex: 1, backgroundColor: "#fff" }}>
       {loading ? (
         <ActivityIndicator
           size="large"
@@ -152,11 +151,12 @@ export default function HomePage() {
                     containerStyle={{
                       position: "relative",
                       top: 10,
+                      zIndex: 10,
                     }}
                   />
                 </LinearGradient>
               </View>
-              <View style={[styles.container, { paddingTop: 44 }]}>
+              <View style={[styles.container, { paddingTop: 44, zIndex: -1 }]}>
                 <View style={styles.section}>
                   <View
                     style={[
@@ -253,7 +253,7 @@ export default function HomePage() {
           )}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 }
 
