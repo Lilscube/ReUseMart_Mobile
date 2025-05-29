@@ -1,4 +1,4 @@
-import WhiteButton from "@/components/whiteButton";
+import WhiteButton from "@/components/WhiteButton";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React from "react";

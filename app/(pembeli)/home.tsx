@@ -1,7 +1,7 @@
+import GradientInput from "@/components/GradientInput";
 import ProductCard from "@/components/ProductCard";
-import GradientInput from "@/components/gradientInput";
-import { BASE_URL_API } from "@/config/config";
-import { getCurrentUser } from "@/config/user/getCurrentUser";
+import { getCurrentUser } from "@/context/UserContext";
+import { BASE_URL_API } from "@/context/config";
 import { Barang } from "@/model/Product";
 import { UserModel } from "@/model/User";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -26,11 +26,10 @@ import {
     ActivityIndicator,
     Dimensions,
     FlatList,
-    SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
-    View,
+    View
 } from "react-native";
 
 export default function HomePage() {
@@ -98,7 +97,7 @@ export default function HomePage() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <View style={{ flex: 1, backgroundColor: "#fff" }}>
       {loading ? (
         <ActivityIndicator
           size="large"
@@ -152,11 +151,12 @@ export default function HomePage() {
                     containerStyle={{
                       position: "relative",
                       top: 10,
+                      zIndex: 10,
                     }}
                   />
                 </LinearGradient>
               </View>
-              <View style={[styles.container, { paddingTop: 44 }]}>
+              <View style={[styles.container, { paddingTop: 44, zIndex: -1 }]}>
                 <View style={styles.section}>
                   <View
                     style={[
@@ -253,7 +253,7 @@ export default function HomePage() {
           )}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 }
 

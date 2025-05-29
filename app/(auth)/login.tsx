@@ -1,19 +1,44 @@
-import GradientButton from "@/components/gradientButton";
-import GradientInput from "@/components/gradientInput";
-import GradientOutlineButton from "@/components/gradientOutlineButton";
-import { API_BASE_URL, BASE_URL_AUTH } from "@/config/config";
+import GradientButton from "@/components/GradientButton";
+import GradientInput from "@/components/GradientInput";
+import GradientOutlineButton from "@/components/GradientOutlineButton";
+import { API_BASE_URL, BASE_URL_AUTH } from "@/context/config";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { LockKeyhole, Mail } from "lucide-react-native";
 import React, { useState } from "react";
-import { Linking, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+    Linking,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState<string | undefined>();
   const [password, setPassword] = useState<string | undefined>();
+
+  const routeHomepage = (role: string) => {
+    switch (role) {
+      case "pembeli":
+        router.replace("/(pembeli)/home");
+        break;
+      case "penitip":
+        router.replace("/(penitip)/home");
+        break;
+      case "kurir":
+        router.replace("/(kurir)/dashboard");
+        break;
+    case "hunter":
+        router.replace("/(hunter)/dashboard");
+        break;
+      default:
+        alert("Role tidak dikenal, tidak bisa diarahkan.");
+    }
+  };
 
   const handleLogin = async () => {
     try {
@@ -32,7 +57,7 @@ export default function LoginPage() {
 
         await AsyncStorage.setItem("token", data.token);
 
-        router.replace("/home");
+        routeHomepage(data.role);
       } else {
         alert(data.message || "Login gagal");
       }
@@ -146,9 +171,7 @@ export default function LoginPage() {
 
         <View>
           <TouchableOpacity
-            onPress={() =>
-              Linking.openURL(`${API_BASE_URL}/register`)
-            } 
+            onPress={() => Linking.openURL(`${API_BASE_URL}/register`)}
             style={{ marginBottom: 12 }}
           >
             <Text
