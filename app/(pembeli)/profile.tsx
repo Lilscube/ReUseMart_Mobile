@@ -1,8 +1,7 @@
 import Divider from "@/components/divider";
 import GradientButton from "@/components/gradientButton";
 import GradientOutlineButton from "@/components/gradientOutlineButton";
-import { getCurrentUser } from "@/config/user/getCurrentUser";
-import { logoutUser } from "@/config/user/logout";
+import { getCurrentUser, logoutUser } from "@/context/UserContext";
 import { UserModel } from "@/model/User";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";

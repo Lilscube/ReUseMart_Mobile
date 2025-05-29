@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { Tabs } from "expo-router";
-import { Gift, Home, User } from "lucide-react-native";
+import { Home, PackageOpen, User } from "lucide-react-native";
 import { StyleSheet, Text } from "react-native";
 
 export default function TabLayout() {
@@ -26,11 +26,11 @@ export default function TabLayout() {
         tabBarInactiveTintColor: "#fff",
         tabBarIcon: ({ color }) => {
           switch (route.name) {
-            case "home/index":
+            case "home":
               return <Home color={color} size={24} />;
-            case "merchandise/index":
-              return <Gift color={color} size={24} />;
-            case "profile/index":
+            case "barang":
+              return <PackageOpen color={color} size={24} />;
+            case "profile":
               return <User color={color} size={24} />;
             default:
               return null;
@@ -61,20 +61,20 @@ export default function TabLayout() {
         ),
       })}
     >
-      <Tabs.Screen name="home/index" options={{ title: "Beranda" }} />
-      <Tabs.Screen name="merchandise/index" options={{ title: "Merchandise" }} />
-      <Tabs.Screen name="profile/index" options={{ title: "Profil" }} />
+      <Tabs.Screen name="home" options={{ title: "Beranda" }} />
+      <Tabs.Screen name="barang" options={{ title: "Merchandise" }} />
+      <Tabs.Screen name="profile" options={{ title: "Profil" }} />
     </Tabs>
   );
 }
 
 const getTabLabel = (routeName: string) => {
   switch (routeName) {
-    case "home/index":
+    case "home":
       return "Beranda";
-    case "merchandise/index":
-      return "Merch";
-    case "profile/index":
+    case "barang":
+      return "Barang Titipan";
+    case "profile":
       return "Profil";
     default:
       return "";
