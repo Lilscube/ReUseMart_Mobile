@@ -1,6 +1,6 @@
-import Divider from "@/components/divider";
-import GradientButton from "@/components/gradientButton";
-import GradientOutlineButton from "@/components/gradientOutlineButton";
+import Divider from "@/components/Divider";
+import GradientButton from "@/components/GradientButton";
+import GradientOutlineButton from "@/components/GradientOutlineButton";
 import { getCurrentUser, logoutUser } from "@/context/UserContext";
 import { UserModel } from "@/model/User";
 import AsyncStorage from "@react-native-async-storage/async-storage";

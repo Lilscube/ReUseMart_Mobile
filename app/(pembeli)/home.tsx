@@ -1,5 +1,5 @@
+import GradientInput from "@/components/GradientInput";
 import ProductCard from "@/components/ProductCard";
-import GradientInput from "@/components/gradientInput";
 import { getCurrentUser } from "@/context/UserContext";
 import { BASE_URL_API } from "@/context/config";
 import { Barang } from "@/model/Product";
