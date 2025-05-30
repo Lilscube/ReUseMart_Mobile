@@ -36,10 +36,15 @@
         }
       ],
       "expo-font"
-      
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "4f7f6a5b-192a-4e8b-8f23-4afc70f46b5c"
+      }
     }
   }
 }
