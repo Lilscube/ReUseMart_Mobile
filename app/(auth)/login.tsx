@@ -1,7 +1,7 @@
 import GradientButton from "@/components/GradientButton";
 import GradientInput from "@/components/GradientInput";
 import GradientOutlineButton from "@/components/GradientOutlineButton";
-import { API_BASE_URL, BASE_URL_AUTH } from "@/context/config";
+import { API_BASE_URL, BASE_URL_MOBILE } from "@/context/config";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
@@ -27,7 +27,7 @@ export default function LoginPage() {
         router.replace("/(pembeli)/home");
         break;
       case "penitip":
-        router.replace("/(penitip)/home");
+        router.replace("/(penitip)/barang");
         break;
       case "kurir":
         router.replace("/(kurir)/dashboard");
@@ -42,7 +42,7 @@ export default function LoginPage() {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch(`${BASE_URL_AUTH}/login`, {
+      const response = await fetch(`${BASE_URL_MOBILE}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -184,21 +184,6 @@ export default function LoginPage() {
             >
               Belum punya akun?{" "}
               <Text style={{ fontFamily: "Poppins-Semibold" }}>Daftar</Text>
-              {/* Nanti kita tembak web */}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push("/login-pegawai")}>
-            <Text
-              style={{
-                color: "#220593",
-                fontSize: 14,
-                textAlign: "center",
-                fontFamily: "Poppins-Regular",
-              }}
-            >
-              <Text style={{ fontFamily: "Poppins-Semibold" }}>
-                Masuk sebagai Pegawai
-              </Text>
             </Text>
           </TouchableOpacity>
         </View>
