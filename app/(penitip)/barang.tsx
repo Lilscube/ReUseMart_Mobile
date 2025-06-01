@@ -30,32 +30,32 @@ export default function PembeliBarangPage() {
   const [user, setUser] = useState<UserModel | null>(null);
   useAuthRedirect(setUser);
 
- useEffect(() => {
-  const fetchBarang = async () => {
-    const token = await AsyncStorage.getItem("token");
-    if (!token) {
-      console.warn("Token tidak ditemukan");
-      return;
-    }
+  useEffect(() => {
+    const fetchBarang = async () => {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.warn("Token tidak ditemukan");
+        return;
+      }
 
-    console.log("Token ditemukan:", token);
+      console.log("Token ditemukan:", token);
 
-    try {
-      const res = await fetch(`${BASE_URL_MOBILE}/barang/by-penitip`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      try {
+        const res = await fetch(`${BASE_URL_MOBILE}/barang/by-penitip`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-      const data = await res.json();
-      setBarangList(data.barang || []);
-    } catch (err) {
-      console.error("Gagal fetch barang penitip:", err);
-    }
-  };
+        const data = await res.json();
+        setBarangList(data.barang || []);
+      } catch (err) {
+        console.error("Gagal fetch barang penitip:", err);
+      }
+    };
 
-  fetchBarang();
-}, [user]);
+    fetchBarang();
+  }, [user]);
 
   function getGreeting() {
     const hour = new Date().getHours();

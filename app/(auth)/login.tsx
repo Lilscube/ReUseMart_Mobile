@@ -2,9 +2,13 @@ import GradientButton from "@/components/GradientButton";
 import GradientInput from "@/components/GradientInput";
 import GradientOutlineButton from "@/components/GradientOutlineButton";
 import { API_BASE_URL, BASE_URL_MOBILE } from "@/context/config";
+import { sendPushNotification } from "@/utils/sendPushNotification";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Constants from "expo-constants";
+import * as Device from "expo-device";
 import { LinearGradient } from "expo-linear-gradient";
+import * as Notifications from "expo-notifications";
 import { useRouter } from "expo-router";
 import { LockKeyhole, Mail } from "lucide-react-native";
 import React, { useState } from "react";
@@ -21,6 +25,8 @@ export default function LoginPage() {
   const [email, setEmail] = useState<string | undefined>();
   const [password, setPassword] = useState<string | undefined>();
 
+  const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
+
   const routeHomepage = (role: string) => {
     switch (role) {
       case "pembeli":
@@ -32,7 +38,7 @@ export default function LoginPage() {
       case "kurir":
         router.replace("/(kurir)/dashboard");
         break;
-    case "hunter":
+      case "hunter":
         router.replace("/(hunter)/dashboard");
         break;
       default:
@@ -58,6 +64,24 @@ export default function LoginPage() {
         await AsyncStorage.setItem("token", data.token);
 
         routeHomepage(data.role);
+
+        const userToken = await AsyncStorage.getItem("token");
+        const res = await fetch(`${BASE_URL_MOBILE}/push-token/penitip`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+
+        if (expoPushToken) {
+          await sendPushNotification(
+            expoPushToken,
+            "Welcome back, king 👑",
+            "Selamat datang kembali, " + data.nama
+          );
+        } else {
+          console.warn("❌ Token push belum tersedia");
+        }
       } else {
         alert(data.message || "Login gagal");
       }
@@ -74,6 +98,38 @@ export default function LoginPage() {
     }
     handleLogin();
   };
+
+  const registerPushToken = async () => {
+    if (!Device.isDevice) {
+      alert("Notifikasi hanya dapat digunakan di perangkat fisik");
+      return;
+    }
+
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+
+    if (finalStatus !== "granted") {
+      alert("Gagal mendapatkan izin notifikasi!");
+      return;
+    }
+
+    const token = (
+      await Notifications.getExpoPushTokenAsync({
+        projectId: Constants.expoConfig?.extra?.eas?.projectId,
+      })
+    ).data;
+
+    setExpoPushToken(token);
+  };
+
+  React.useEffect(() => {
+    registerPushToken();
+  }, []);
 
   return (
     <LinearGradient

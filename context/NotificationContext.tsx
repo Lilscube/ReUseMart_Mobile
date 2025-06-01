@@ -53,24 +53,36 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
   // !! Debug
   const [user, setUser] = useState<UserModel | null>(null);
   useAuthRedirect(setUser);
-  const userId = user?.id;
 
   useEffect(() => {
     registerForPushNotificationsAsync().then(
       async (token) => {
         const UserToken = await AsyncStorage.getItem("token");
 
-        if (!token) throw new Error("User Token not found");
-        fetch(`${BASE_URL_MOBILE}/push-token/penitip`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${UserToken}`, // Token dari login
-          },
-          body: JSON.stringify({
-            expo_push_token: expoPushToken,
-          }),
-        });
+        if (!UserToken) throw new Error("User Token not found");
+
+        switch (user?.role) {
+          case "pembeli":
+            break;
+          case "penitip":
+            fetch(`${BASE_URL_MOBILE}/push-token/penitip`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${UserToken}`,
+              },
+              body: JSON.stringify({
+                expo_push_token: expoPushToken,
+              }),
+            });
+            break;
+          case "kurir":
+            break;
+          case "hunter":
+            break;
+          default:
+            alert("Role tidak dikenal, tidak bisa diarahkan.");
+        }
       },
       (error) => {
         console.error("❌ Gagal register push token:", error);
