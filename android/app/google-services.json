@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1019986646160",
+    "project_id": "reusemart-notification-7e05d",
+    "storage_bucket": "reusemart-notification-7e05d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1019986646160:android:e94afe396ab4422aba7415",
+        "android_client_info": {
+          "package_name": "com.monostereo.ReUseMart"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAl4FyQwZIUiATu-0BgVSa-am83TKB07mY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
