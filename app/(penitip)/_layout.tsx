@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { Tabs } from "expo-router";
-import { Home, PackageOpen, User } from "lucide-react-native";
+import { PackageOpen, User } from "lucide-react-native";
 import { StyleSheet, Text } from "react-native";
 
 export default function TabLayout() {
@@ -26,8 +26,6 @@ export default function TabLayout() {
         tabBarInactiveTintColor: "#fff",
         tabBarIcon: ({ color }) => {
           switch (route.name) {
-            case "home":
-              return <Home color={color} size={24} />;
             case "barang":
               return <PackageOpen color={color} size={24} />;
             case "profile":
@@ -61,7 +59,6 @@ export default function TabLayout() {
         ),
       })}
     >
-      <Tabs.Screen name="home" options={{ title: "Beranda" }} />
       <Tabs.Screen name="barang" options={{ title: "Merchandise" }} />
       <Tabs.Screen name="profile" options={{ title: "Profil" }} />
     </Tabs>
@@ -70,8 +67,6 @@ export default function TabLayout() {
 
 const getTabLabel = (routeName: string) => {
   switch (routeName) {
-    case "home":
-      return "Beranda";
     case "barang":
       return "Barang Titipan";
     case "profile":

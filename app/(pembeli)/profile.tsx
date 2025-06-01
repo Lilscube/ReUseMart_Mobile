@@ -1,9 +1,8 @@
 import Divider from "@/components/Divider";
 import GradientButton from "@/components/GradientButton";
 import GradientOutlineButton from "@/components/GradientOutlineButton";
-import { getCurrentUser, logoutUser } from "@/context/UserContext";
+import { logoutUser, useAuthRedirect } from "@/context/UserContext";
 import { UserModel } from "@/model/User";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
@@ -18,16 +17,15 @@ import {
     User,
     UserRound,
 } from "lucide-react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
     Image,
     Modal,
-    SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View
+    View,
 } from "react-native";
 
 export default function ProfileScreen() {
@@ -37,21 +35,7 @@ export default function ProfileScreen() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const [user, setUser] = useState<UserModel | null>(null);
-
-  useEffect(() => {
-    AsyncStorage.getItem("token").then((token) => {
-      if (!token) {
-        router.replace("/login");
-      } else {
-        getCurrentUser()
-          .then(setUser)
-          .catch((err) => {
-            console.error("Gagal ambil user:", err.message);
-            router.replace("/login");
-          });
-      }
-    });
-  }, []);
+  useAuthRedirect(setUser);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -64,7 +48,7 @@ export default function ProfileScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView
         ref={scrollRef}
         contentContainerStyle={{ paddingBottom: 24 }}
@@ -274,9 +258,7 @@ export default function ProfileScreen() {
                 Yakin ingin logout?
               </Text>
               <View style={{ flexDirection: "row", gap: 16 }}>
-                <View
-                  style={{ width: "50%" }}
-                >
+                <View style={{ width: "50%" }}>
                   <GradientOutlineButton
                     title="Logout"
                     onPress={async () => {
@@ -288,9 +270,7 @@ export default function ProfileScreen() {
                     variant="danger"
                   />
                 </View>
-                <View
-                  style={{ width: "50%" }}
-                >
+                <View style={{ width: "50%" }}>
                   <GradientButton
                     title="Batal"
                     onPress={() => setShowLogoutModal(false)}
@@ -302,7 +282,7 @@ export default function ProfileScreen() {
           </View>
         </Modal>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
