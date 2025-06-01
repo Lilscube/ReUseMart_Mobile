@@ -66,7 +66,8 @@ export default function LoginPage() {
         routeHomepage(data.role);
 
         const userToken = await AsyncStorage.getItem("token");
-        const res = await fetch(`${BASE_URL_MOBILE}/push-token/penitip`, {
+        
+        await fetch(`${BASE_URL_MOBILE}/push-token/penitip`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${userToken}`,
@@ -76,8 +77,8 @@ export default function LoginPage() {
         if (expoPushToken) {
           await sendPushNotification(
             expoPushToken,
-            "Welcome back, king 👑",
-            "Selamat datang kembali, " + data.nama
+            "Welcome back, king 👑!",
+            "Selamat datang kembali di ReUseMart, " + data.nama
           );
         } else {
           console.warn("❌ Token push belum tersedia");
@@ -120,11 +121,12 @@ export default function LoginPage() {
 
     const token = (
       await Notifications.getExpoPushTokenAsync({
-        projectId: Constants.expoConfig?.extra?.eas?.projectId,
+        projectId: Constants.expoConfig?.extra?.eas?.projectId, // opsional, tergantung setup
       })
     ).data;
 
     setExpoPushToken(token);
+    console.log("📱 Push Token didapat:", token);
   };
 
   React.useEffect(() => {
@@ -227,7 +229,7 @@ export default function LoginPage() {
 
         <View>
           <TouchableOpacity
-            onPress={() => Linking.openURL(`${API_BASE_URL}/register`)}
+            onPress={() => Linking.openURL(`${API_BASE_URL}/register)`)}
             style={{ marginBottom: 12 }}
           >
             <Text

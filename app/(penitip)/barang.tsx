@@ -38,8 +38,6 @@ export default function PembeliBarangPage() {
         return;
       }
 
-      console.log("Token ditemukan:", token);
-
       try {
         const res = await fetch(`${BASE_URL_MOBILE}/barang/by-penitip`, {
           headers: {
