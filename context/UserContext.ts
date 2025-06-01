@@ -9,7 +9,7 @@ export async function getCurrentUser() {
   try {
     const token = await AsyncStorage.getItem("token");
 
-    if (!token) throw new Error("Token not found");
+    if (!token) throw new Error("User Token not found");
 
     const res = await fetch(`${BASE_URL_MOBILE}/auth/me`, {
       method: "GET",

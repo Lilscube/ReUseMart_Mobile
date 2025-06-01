@@ -1,5 +1,6 @@
 import { UserModel } from "@/model/User";
 import { registerForPushNotificationsAsync } from "@/utils/registerForPushNotificationsAsync";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import React, {
     createContext,
@@ -55,19 +56,28 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
   const userId = user?.id;
 
   useEffect(() => {
-    if (user?.role === "penitip") {
-      registerForPushNotificationsAsync().then(
-        (token) => {
-          console.log("📲 Token berhasil dibuat:", token);
-          setExpoPushToken(token ?? null);
-        },
-        (error) => {
-          console.error("❌ Gagal register push token:", error);
-          setError(error);
-        }
-      );
-    }
-  }, [user]);
+    registerForPushNotificationsAsync().then(
+      async (token) => {
+        const UserToken = await AsyncStorage.getItem("token");
+
+        if (!token) throw new Error("User Token not found");
+        fetch(`${BASE_URL_MOBILE}/push-token/penitip`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${UserToken}`, // Token dari login
+          },
+          body: JSON.stringify({
+            expo_push_token: expoPushToken,
+          }),
+        });
+      },
+      (error) => {
+        console.error("❌ Gagal register push token:", error);
+        setError(error);
+      }
+    );
+  });
   // !! Debug
 
   useEffect(() => {
