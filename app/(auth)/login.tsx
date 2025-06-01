@@ -65,19 +65,10 @@ export default function LoginPage() {
 
         routeHomepage(data.role);
 
-        const userToken = await AsyncStorage.getItem("token");
-        
-        await fetch(`${BASE_URL_MOBILE}/push-token/penitip`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        });
-
         if (expoPushToken) {
           await sendPushNotification(
             expoPushToken,
-            "Welcome back, king 👑!",
+            "Welcome back, king 👑",
             "Selamat datang kembali di ReUseMart, " + data.nama
           );
         } else {

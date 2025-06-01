@@ -57,19 +57,18 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
   useEffect(() => {
     registerForPushNotificationsAsync().then(
       async (token) => {
-        const UserToken = await AsyncStorage.getItem("token");
+        const userToken = await AsyncStorage.getItem("token");
 
-        if (!UserToken) throw new Error("User Token not found");
+        if (!userToken) throw new Error("User Token not found");
 
-        await fetch(`${BASE_URL_MOBILE}/push-token/penitip`, {
+        // Ganti endpoint dan method dari GET ke POST
+        await fetch(`${BASE_URL_MOBILE}/push-token`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${UserToken}`,
+            Authorization: `Bearer ${userToken}`,
           },
-          body: JSON.stringify({
-            expo_push_token: expoPushToken,
-          }),
+          body: JSON.stringify({ expo_push_token: expoPushToken }),
         });
       },
       (error) => {
