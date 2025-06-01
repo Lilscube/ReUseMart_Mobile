@@ -1,3 +1,4 @@
+import { UserModel } from "@/model/User";
 import { registerForPushNotificationsAsync } from "@/utils/registerForPushNotificationsAsync";
 import * as Notifications from "expo-notifications";
 import React, {
@@ -8,6 +9,8 @@ import React, {
     useRef,
     useState,
 } from "react";
+import { BASE_URL_MOBILE } from "./config";
+import { useAuthRedirect } from "./UserContext";
 
 interface NotificationContextType {
   expoPushToken: string | null;
@@ -41,8 +44,31 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     useState<Notifications.Notification | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
-  const notificationListener = useRef<Notifications.EventSubscription | null>(null);
+  const notificationListener = useRef<Notifications.EventSubscription | null>(
+    null
+  );
   const responseListener = useRef<Notifications.EventSubscription | null>(null);
+
+  // !! Debug
+  const [user, setUser] = useState<UserModel | null>(null);
+  useAuthRedirect(setUser);
+  const userId = user?.id;
+
+  useEffect(() => {
+    if (user?.role === "penitip") {
+      registerForPushNotificationsAsync().then(
+        (token) => {
+          console.log("📲 Token berhasil dibuat:", token);
+          setExpoPushToken(token ?? null);
+        },
+        (error) => {
+          console.error("❌ Gagal register push token:", error);
+          setError(error);
+        }
+      );
+    }
+  }, [user]);
+  // !! Debug
 
   useEffect(() => {
     registerForPushNotificationsAsync().then(
@@ -52,7 +78,10 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
 
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
-        console.log("🔔 Notification received while the app is running: ", notification);
+        console.log(
+          "🔔 Notification received while the app is running: ",
+          notification
+        );
         setNotification(notification);
       });
 
@@ -75,6 +104,23 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (user?.role === "penitip" && expoPushToken) {
+      console.log("🚀 Mengirim token ke server:", expoPushToken, user.id);
+      fetch(`${BASE_URL_MOBILE}/push-token/penitip`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id_penitip: user.id,
+          expo_push_token: expoPushToken,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => console.log("✅ Token terkirim:", data))
+        .catch((err) => console.error("❌ Gagal kirim token:", err));
+    }
+  }, [expoPushToken, user]);
 
   return (
     <NotificationContext.Provider
