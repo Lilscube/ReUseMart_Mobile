@@ -1,11 +1,10 @@
+import { useDoubleBackExit } from "@/components/DoubleBackExitAlert";
 import GradientInput from "@/components/GradientInput";
-import ProductCard from "@/components/ProductCard";
-import { getCurrentUser } from "@/context/UserContext";
+import ProductCard from "@/components/PembeliProductCard";
 import { BASE_URL_API } from "@/context/config";
+import { useAuthRedirect } from "@/context/UserContext";
 import { Barang } from "@/model/Product";
 import { UserModel } from "@/model/User";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import {
@@ -29,12 +28,13 @@ import {
     ScrollView,
     StyleSheet,
     Text,
-    View
+    View,
 } from "react-native";
 
 export default function HomePage() {
+  useDoubleBackExit();
+
   const router = useRouter();
-  const [user, setUser] = useState<UserModel | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [BarangList, setBarangList] = useState<Barang[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,31 +45,8 @@ export default function HomePage() {
 
   const itemWidth = (screenWidth - horizontalPadding * 2 - itemGap) / 2;
 
-  const categories = [
-    { name: "Elektronik" },
-    { name: "Fashion" },
-    { name: "Otomotif" },
-    { name: "Buku" },
-    { name: "Furniture" },
-  ];
-
-  useFocusEffect(
-    React.useCallback(() => {
-      AsyncStorage.getItem("token").then((token) => {
-        if (!token) {
-          setUser(null);
-          router.replace("/login");
-        } else {
-          getCurrentUser()
-            .then(setUser)
-            .catch((err) => {
-              console.error("Gagal ambil user:", err.message);
-              router.replace("/login");
-            });
-        }
-      });
-    }, [])
-  );
+  const [user, setUser] = useState<UserModel | null>(null);
+  useAuthRedirect(setUser);
 
   useEffect(() => {
     fetch(`${BASE_URL_API}/barang`)
@@ -83,10 +60,6 @@ export default function HomePage() {
         setLoading(false);
       });
   }, []);
-
-  const filteredProducts = BarangList.filter((product) =>
-    product.nama_barang.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   function getGreeting() {
     const hour = new Date().getHours();
@@ -106,7 +79,7 @@ export default function HomePage() {
         />
       ) : (
         <FlatList
-          data={filteredProducts}
+          data={BarangList}
           keyExtractor={(item) => item.id_barang.toString()}
           numColumns={2}
           columnWrapperStyle={{
@@ -129,21 +102,24 @@ export default function HomePage() {
                     height: 135,
                   }}
                 >
-                  <View>
-                    <View  style={{ flexDirection: "row", gap: 16, justifyContent: "space-between" ,alignItems: "center",  marginTop: 16}}>
-                      <Text
-                        style={[
-                          styles.normalText,
-                          { color: "#fff" },
-                        ]}
-                      >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 16,
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginTop: 16,
+                    }}
+                  >
+                    <View>
+                      <Text style={[styles.normalText, { color: "#fff" }]}>
                         {getGreeting()},
                       </Text>
-                    <Bell color={"#fff"} size={24} />
-                    </View>
                       <Text style={[styles.title, { color: "#fff" }]}>
                         {user?.nama || "Guest"}
                       </Text>
+                    </View>
+                    <Bell color={"#fff"} size={24} />
                   </View>
                   <GradientInput
                     placeholder="Cari apa hari ini?"

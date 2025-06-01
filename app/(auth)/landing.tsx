@@ -31,7 +31,7 @@ export default function Landing() {
           kamu bawa pulang
         </Text>
 
-        <WhiteButton title="Mulai" onPress={() => router.push("/login")} />
+        <WhiteButton title="Mulai" onPress={() => router.replace("/login")} />
       </View>
     </LinearGradient>
   );
