@@ -68,9 +68,20 @@ export function useAuthRedirect(setUser: (user: UserModel | null) => void) {
 
 export async function logoutUser() {
   try {
+    const token = await AsyncStorage.getItem("token");
+
+    if (token) {
+      await fetch(`${BASE_URL_MOBILE}/push-token`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    }
+
     await AsyncStorage.removeItem("token");
-    console.log("User logged out successfully");
+    console.log("✅ Logout & push token dihapus dari DB");
   } catch (error) {
-    console.error("Logout failed:", error);
+    console.error("❌ Logout failed:", error);
   }
 }

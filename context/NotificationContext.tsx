@@ -50,7 +50,6 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
   );
   const responseListener = useRef<Notifications.EventSubscription | null>(null);
 
-  // !! Debug
   const [user, setUser] = useState<UserModel | null>(null);
   useAuthRedirect(setUser);
 
@@ -77,7 +76,6 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
       }
     );
   });
-  // !! Debug
 
   useEffect(() => {
     registerForPushNotificationsAsync().then(
@@ -101,7 +99,6 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
           JSON.stringify(response, null, 2),
           JSON.stringify(response.notification.request.content.data, null, 2)
         );
-        // Handle the notification response here
       });
 
     return () => {
@@ -113,23 +110,6 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
       }
     };
   }, []);
-
-  useEffect(() => {
-    if (user?.role === "penitip" && expoPushToken) {
-      console.log("🚀 Mengirim token ke server:", expoPushToken, user.id);
-      fetch(`${BASE_URL_MOBILE}/push-token/penitip`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id_penitip: user.id,
-          expo_push_token: expoPushToken,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => console.log("✅ Token terkirim:", data))
-        .catch((err) => console.error("❌ Gagal kirim token:", err));
-    }
-  }, [expoPushToken, user]);
 
   return (
     <NotificationContext.Provider
