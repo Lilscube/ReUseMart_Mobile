@@ -30,7 +30,7 @@ export default function ProductCard({ item, width }: Props) {
       <View>
         <Text style={styles.title}>{item.id_barang}</Text>
         <Text style={styles.title}>{item.nama_barang}</Text>
-        <Text style={styles.price}>Rp {formatRupiah(item.harga_barang)}</Text>
+        <Text style={styles.price}>{formatRupiah(item.harga_barang)}</Text>
         <Text style={styles.title}>Status Titip: {item.status_titip}</Text>
       </View>
     </View>
