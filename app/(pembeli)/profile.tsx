@@ -1,8 +1,11 @@
 import Divider from "@/components/Divider";
 import GradientButton from "@/components/GradientButton";
 import GradientOutlineButton from "@/components/GradientOutlineButton";
+import { BASE_URL_MOBILE } from "@/context/config";
 import { logoutUser, useAuthRedirect } from "@/context/UserContext";
+import { TransaksiModel } from "@/model/Transaksi";
 import { UserModel } from "@/model/User";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
@@ -17,7 +20,7 @@ import {
     User,
     UserRound,
 } from "lucide-react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     Image,
     Modal,
@@ -37,6 +40,8 @@ export default function ProfileScreen() {
   const [user, setUser] = useState<UserModel | null>(null);
   useAuthRedirect(setUser);
 
+  const [transaksiList, setTransaksiList] = useState<TransaksiModel[]>([]);
+
   useFocusEffect(
     React.useCallback(() => {
       scrollRef.current?.scrollTo({ y: 0, animated: true });
@@ -46,6 +51,43 @@ export default function ProfileScreen() {
   function handleLogout() {
     setShowLogoutModal(true);
   }
+
+  useEffect(() => {
+    async function fetchTransaksi() {
+      try {
+        const token = await AsyncStorage.getItem("token");
+
+        if (!token) throw new Error("User Token not found");
+
+        const res = await fetch(`${BASE_URL_MOBILE}/transaksi/by-pembeli`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) {
+          const error = await res.json();
+          throw new Error(
+            error.message || "Failed to fetch pembeli's transaksi"
+          );
+        }
+
+        const data = await res.json();
+        // console.log("Data Transaksi: ", data);
+        setTransaksiList(
+          data.transaksi?.map((t: any) => ({
+            ...t,
+            barang: t.barang ?? [],
+          })) ?? []
+        );
+      } catch (err) {
+        console.error("Fetch transaksi error:", err);
+      }
+    }
+
+    fetchTransaksi();
+  }, []);
 
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -123,7 +165,7 @@ export default function ProfileScreen() {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{ gap: 12 }}
             >
-              {[1, 2, 3].map((_, index) => (
+              {transaksiList.map((transaksi, index) => (
                 <View key={index} style={styles.card}>
                   <View
                     style={{
@@ -132,21 +174,41 @@ export default function ProfileScreen() {
                       gap: 8,
                     }}
                   >
-                    <Text style={styles.badge}>Dalam Pengiriman</Text>
+                    <Text style={styles.badge}>
+                      {transaksi.status_transaksi}
+                    </Text>
                     <Text style={styles.nota}>
-                      No. Nota : 2025.04.{98 + index}
+                      No. Nota: {transaksi.no_nota}
                     </Text>
                   </View>
+
                   <View style={styles.itemRow}>
-                    <View style={styles.imagePlaceholder} />
+                    <Image
+                      source={{
+                        uri:
+                          transaksi.barang?.[0]?.gambar_barang ||
+                          "https://via.placeholder.com/80",
+                      }}
+                      style={styles.imagePlaceholder}
+                    />
                     <View>
-                      <Text style={styles.itemName}>Nama Item {index + 1}</Text>
-                      <Text style={styles.itemSub}>+ 2 barang lainnya</Text>
+                      <Text style={styles.itemName}>
+                        {transaksi.barang[0]?.nama_barang ||
+                          "Barang Tidak Diketahui"}
+                      </Text>
+                      {transaksi.barang?.length > 1 && (
+                        <Text style={styles.itemSub}>
+                          + {transaksi.barang.length - 1} barang lainnya
+                        </Text>
+                      )}
                     </View>
                   </View>
+
                   <GradientOutlineButton
                     title="Lihat Detail Transaksi"
-                    onPress={() => console.log("Klik Transaksi " + index)}
+                    onPress={() => {
+                      console.log("Klik transaksi:", transaksi.id_transaksi);
+                    }}
                     size="small"
                   />
                 </View>
