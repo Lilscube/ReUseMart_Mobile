@@ -10,25 +10,25 @@ import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import {
-    Bell,
-    ChevronRight,
-    History,
-    LogOut,
-    Mail,
-    Phone,
-    Sparkles,
-    User,
-    UserRound,
+  Bell,
+  ChevronRight,
+  History,
+  LogOut,
+  Mail,
+  Phone,
+  Sparkles,
+  User,
+  UserRound,
 } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import {
-    Image,
-    Modal,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Image,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function ProfileScreen() {
@@ -207,7 +207,10 @@ export default function ProfileScreen() {
                   <GradientOutlineButton
                     title="Lihat Detail Transaksi"
                     onPress={() => {
-                      console.log("Klik transaksi:", transaksi.id_transaksi);
+                      router.push({
+                        pathname: "/detail-transaksi-pembeli/[id_transaksi]" as const,
+                        params: { id_transaksi: transaksi.id_transaksi.toString() },
+                      });
                     }}
                     size="small"
                   />
@@ -256,8 +259,14 @@ export default function ProfileScreen() {
           <View style={styles.section}>
             <Text style={[styles.title, { color: "#000" }]}>Data Pribadi</Text>
             {[
-              { icon: <History size={18} />, label: "History Transaksi" },
+              {
+                icon: <History size={18} />,
+                label: "History Transaksi",
+                onPress: () => router.push("/history-pembeli"),
+              },
+
               { icon: <Bell size={18} />, label: "Pengaturan Notifikasi" },
+
               {
                 icon: <LogOut size={18} />,
                 label: "Logout",
