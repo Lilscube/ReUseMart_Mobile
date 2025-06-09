@@ -20,40 +20,41 @@ export default function DetailTransaksiPage() {
     const { id_transaksi } = useLocalSearchParams();
     const [transaksi, setTransaksi] = useState<TransaksiModel | null>(null);
 
-    useState<TransaksiModel | null>(null);
-
-    // useEffect(() => {
-    //     fetch(`${BASE_URL_API}/barang`)
-    //         .then((res) => res.json())
-    //         .then((data) => {
-    //             setBarangList(data.barang || []);
-    //             setLoading(false);
-    //         })
-    //         .catch((err) => {
-    //             console.error("Gagal fetch barang:", err);
-    //             setLoading(false);
-    //         });
-    // }, []);
-
-    // useEffect(() => {
-    //     async function fetchTransaksi() {
-    //         try {
-    //             const res = await fetch(
-    //                 `${BASE_URL_API}/transaksi`)
-    //             const data = await res.json();
-    //             setTransaksi(data);
-    //         } catch (error) {
-    //             console.error("Failed to fetch transaksi", error);
-    //         }
-    //     }
-
-    //     if (id_transaksi) fetchTransaksi();
-    // }, [id_transaksi]);
-
-
     useEffect(() => {
-        setTransaksi(dummyTransaksi);
-    }, []);
+        if (!id_transaksi) return;
+
+        const fetchTransaksi = async () => {
+            try {
+                const res = await fetch(`${BASE_URL_API}/transaksi/${id_transaksi}`);
+                if (!res.ok) {
+                    throw new Error("Gagal mengambil detail transaksi");
+                }
+
+                const data = await res.json();
+
+                // Normalisasi agar gambar_barang jadi string (bukan objek)
+                const barangWithImage = (data.barang || []).map((item: any) => ({
+                    ...item,
+                    gambar_barang: item.src_img, // konversi alias
+                }));
+
+                setTransaksi({
+                    ...data.transaksi,
+                    barang: barangWithImage,
+                });
+            } catch (error) {
+                console.error("Fetch transaksi error:", error);
+            }
+        };
+
+        fetchTransaksi();
+    }, [id_transaksi]);
+
+
+
+    // useEffect(() => {
+    //     setTransaksi(dummyTransaksi);
+    // }, []);
 
     if (!transaksi) {
         return (
@@ -79,14 +80,18 @@ export default function DetailTransaksiPage() {
                 <Text style={styles.sectionTitle}>Detail Produk:</Text>
                 {transaksi.barang?.map((item, idx) => (
                     <View key={idx} style={styles.productCard}>
-                        <Image source={{ uri: item.gambar_barang }} style={styles.productImage} />
+                        <Image
+                            source={{ uri: item.gambar_barang || "https://via.placeholder.com/60" }}
+                            style={styles.productImage}
+                        />
+
                         <View style={{ flex: 1 }}>
                             <Text style={styles.productName}>{item.nama_barang}</Text>
                             <Text style={styles.productPrice}>Rp{item.harga_barang.toLocaleString()}</Text>
                         </View>
-                        <TouchableOpacity style={styles.detailButton}>
+                        {/* <TouchableOpacity style={styles.detailButton}>
                             <Text style={styles.detailButtonText}>Lihat Detail</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                 ))}
 
@@ -113,51 +118,6 @@ export default function DetailTransaksiPage() {
         </SafeAreaView>
     );
 }
-
-const dummyTransaksi: TransaksiModel = {
-    id_transaksi: 1,
-    no_nota: "2025.06.001",
-    harga_awal: 180000,
-    ongkos_kirim: 15000,
-    diskon: 10000,
-    harga_akhir: 185000,
-    status_transaksi: "Dikirim",
-    tanggal_pesan: "2025-06-08",
-    tanggal_lunas: "2025-06-08T10:00:00",
-    tambahan_poin: 5,
-    status_pembayaran: "Lunas",
-    img_bukti_transfer: "https://via.placeholder.com/150",
-    is_rated: false,
-    petugas_name: "Andi CS",
-    jenis_pengiriman: "Kurir",
-    tanggal_kirim: "2025-06-09",
-    tanggal_terima: null,
-    lokasi: "Jl. Mawar No. 123, Sleman, Yogyakarta",
-    barang: [
-        {
-            id_barang: 101,
-            nama_barang: "Kipas Angin Bekas",
-            harga_barang: 80000,
-            stok_barang: 2,
-            gambar_barang: "https://via.placeholder.com/60",
-            deskripsi_barang: "Kondisi masih bagus, hanya sedikit berdebu.",
-            kategori_barang: "Elektronik",
-            created_at: "2025-05-30T09:00:00",
-            updated_at: "2025-06-01T15:00:00",
-        },
-        {
-            id_barang: 102,
-            nama_barang: "Setrika Philips",
-            harga_barang: 100000,
-            stok_barang: 1,
-            gambar_barang: "https://via.placeholder.com/60",
-            deskripsi_barang: "Setrika listrik dengan fitur anti lengket.",
-            kategori_barang: "Peralatan Rumah",
-            created_at: "2025-06-02T10:30:00",
-            updated_at: "2025-06-05T13:20:00",
-        },
-    ],
-};
 
 const styles = StyleSheet.create({
     container: {

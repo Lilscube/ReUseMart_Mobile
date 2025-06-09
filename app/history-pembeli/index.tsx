@@ -1,8 +1,17 @@
 import { useEffect, useState } from "react";
 import { TransaksiModel } from "@/model/Transaksi";
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Image } from "react-native";
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    ScrollView,
+    StyleSheet,
+    Image,
+    SafeAreaView,
+} from "react-native";
 import { useRouter } from "expo-router";
-import { SafeAreaView } from 'react-native';
+import { BASE_URL_MOBILE } from "@/context/config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function formatDate(dateString: string | null) {
     if (!dateString) return "-";
@@ -21,43 +30,81 @@ export default function HistoryPembeliPage() {
     const [riwayat, setRiwayat] = useState<TransaksiModel[]>([]);
 
     useEffect(() => {
-        setRiwayat(dataDummyRiwayat.filter((trx) => trx.status_transaksi === "Selesai"));
+        const fetchRiwayat = async () => {
+            try {
+                const token = await AsyncStorage.getItem("token");
+                const res = await fetch(`${BASE_URL_MOBILE}/transaksi/by-pembeli`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                const data = await res.json();
+                if (res.ok && data.transaksi) {
+                    setRiwayat(data.transaksi);
+                }
+            } catch (err) {
+                console.error("Gagal ambil riwayat:", err);
+            }
+        };
+
+        fetchRiwayat();
     }, []);
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-
             <ScrollView style={styles.container}>
-                {/* <Text style={styles.period}>Periode: 01 Jun 2025 - 08 Jun 2025</Text> */}
-
                 {riwayat.map((trx) => (
                     <View key={trx.id_transaksi} style={styles.card}>
-                        <View style={styles.statusBadge}><Text style={styles.statusText}>{trx.status_transaksi}</Text></View>
-                        <Text style={styles.text}>No. Nota: {trx.no_nota}</Text>
-                        <Text style={styles.text}>Dipesan pada tanggal: {trx.tanggal_pesan}</Text>
-                        <Text style={styles.text}>Selesai pada tanggal: {formatDate(trx.tanggal_lunas)}</Text>
-
-                        <View style={styles.productRow}>
-                            <Image source={{ uri: trx.barang[0].gambar_barang }} style={styles.productImage} />
-                            <View>
-                                <Text style={styles.productName}>{trx.barang[0].nama_barang}</Text>
-                                <Text style={styles.productPrice}>Rp{trx.barang[0].harga_barang.toLocaleString()}</Text>
-                            </View>
+                        <View style={styles.statusBadge}>
+                            <Text style={styles.statusText}>{trx.status_transaksi}</Text>
                         </View>
+                        <Text style={styles.text}>No. Nota: {trx.no_nota}</Text>
+                        <Text style={styles.text}>Dipesan pada: {trx.tanggal_pesan}</Text>
+                        <Text style={styles.text}>
+                            Selesai pada: {formatDate(trx.tanggal_lunas)}
+                        </Text>
+
+                        {trx.barang?.length > 0 && (
+                            <View style={styles.productRow}>
+                                <Image
+                                    source={{
+                                        uri:
+                                            trx.barang[0].gambar_barang?.[0]?.src_img ||
+                                            "https://via.placeholder.com/60",
+                                    }}
+                                    style={styles.productImage}
+                                />
+                                <View>
+                                    <Text style={styles.productName}>
+                                        {trx.barang[0].nama_barang}
+                                    </Text>
+                                    <Text style={styles.productPrice}>
+                                        Rp{trx.barang[0].harga_barang.toLocaleString("id-ID")}
+                                    </Text>
+                                </View>
+                            </View>
+                        )}
 
                         {trx.barang.length > 1 && (
-                            <Text style={styles.moreProduct}>+ {trx.barang.length - 1} barang lainnya</Text>
+                            <Text style={styles.moreProduct}>
+                                + {trx.barang.length - 1} barang lainnya
+                            </Text>
                         )}
 
                         <View style={styles.bottomRow}>
-                            <Text style={styles.totalText}>Total Bayar: Rp {trx.harga_akhir.toLocaleString()}</Text>
+                            <Text style={styles.totalText}>
+                                Total Bayar: Rp{trx.harga_akhir.toLocaleString("id-ID")}
+                            </Text>
+
                             <TouchableOpacity
                                 onPress={() => router.push(`/detail-transaksi-pembeli/${trx.id_transaksi}`)}
-                                style={styles.detailButton}
+                                style={[styles.detailButton, { marginTop: 8 }]}
                             >
                                 <Text style={styles.detailButtonText}>Lihat Detail Transaksi</Text>
                             </TouchableOpacity>
                         </View>
+
                     </View>
                 ))}
             </ScrollView>
@@ -65,78 +112,11 @@ export default function HistoryPembeliPage() {
     );
 }
 
-const dataDummyRiwayat: TransaksiModel[] = [
-    {
-        id_transaksi: 1,
-        no_nota: "25.06.5",
-        harga_awal: 95000,
-        ongkos_kirim: 15000,
-        diskon: 0,
-        harga_akhir: 110000,
-        status_transaksi: "Selesai",
-        tanggal_pesan: "01 Jun 2025, 12:00",
-        tanggal_lunas: "2025-06-01T12:30:00",
-        tambahan_poin: 10,
-        status_pembayaran: "Lunas",
-        img_bukti_transfer: null,
-        is_rated: true,
-        jenis_pengiriman: "Kurir",
-        lokasi: "Jl. Contoh 1",
-        barang: [
-            {
-                id_barang: 1,
-                nama_barang: "Kopi 4 Shot",
-                harga_barang: 19000,
-                stok_barang: 10,
-                gambar_barang: "https://via.placeholder.com/60",
-            },
-            {
-                id_barang: 2,
-                nama_barang: "Brownies Panggang",
-                harga_barang: 76000,
-                stok_barang: 5,
-                gambar_barang: "https://via.placeholder.com/60",
-            },
-        ],
-    },
-    {
-        id_transaksi: 2,
-        no_nota: "25.06.1",
-        harga_awal: 100000,
-        ongkos_kirim: 19000,
-        diskon: 0,
-        harga_akhir: 119000,
-        status_transaksi: "Selesai",
-        tanggal_pesan: "01 Jun 2025, 06:40",
-        tanggal_lunas: "2025-06-01T07:00:00",
-        tambahan_poin: 5,
-        status_pembayaran: "Lunas",
-        img_bukti_transfer: null,
-        is_rated: false,
-        jenis_pengiriman: "Kurir",
-        lokasi: "Jl. Contoh 2",
-        barang: [
-            {
-                id_barang: 3,
-                nama_barang: "Novel Laskar Pelangi",
-                harga_barang: 100000,
-                stok_barang: 3,
-                gambar_barang: "https://via.placeholder.com/60",
-            },
-        ],
-    },
-];
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
         backgroundColor: "#fff",
-    },
-    period: {
-        fontSize: 14,
-        color: "#555",
-        marginBottom: 12,
     },
     card: {
         backgroundColor: "#fff",
@@ -192,9 +172,9 @@ const styles = StyleSheet.create({
     },
     bottomRow: {
         marginTop: 12,
-        flexDirection: "row",
+        flexDirection: "column",
         justifyContent: "space-between",
-        alignItems: "center",
+        alignItems: "flex-start",
     },
     totalText: {
         fontWeight: "700",

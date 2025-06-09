@@ -76,7 +76,11 @@ export default function ProfileScreen() {
         const data = await res.json();
         // console.log("Data Transaksi: ", data);
         setTransaksiList(
-          data.transaksi?.map((t: any) => ({
+          (data.transaksi ?? [])
+            .filter((t : any) =>
+              ["PAID", "PENDING", "ON_PROGRES"].includes(t.status_transaksi) 
+          )
+          .map((t: any) => ({
             ...t,
             barang: t.barang ?? [],
           })) ?? []
@@ -185,9 +189,8 @@ export default function ProfileScreen() {
                   <View style={styles.itemRow}>
                     <Image
                       source={{
-                        uri:
-                          transaksi.barang?.[0]?.gambar_barang ||
-                          "https://via.placeholder.com/80",
+                        uri: transaksi.barang?.[0]?.gambar_barang?.[0]?.src_img || "https://via.placeholder.com/80",
+
                       }}
                       style={styles.imagePlaceholder}
                     />

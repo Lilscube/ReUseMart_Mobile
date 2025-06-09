@@ -17,6 +17,7 @@ import {
   Sparkles,
   User,
   UserRound,
+  Wallet,
 } from "lucide-react-native";
 import React, { useRef, useState } from "react";
 import {
@@ -99,16 +100,27 @@ export default function ProfileScreen() {
                   {user?.nama || "Nama Pengguna"}
                 </Text>
               </View>
-              <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
-              >
+
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                 <Text style={{ marginBottom: 4 }}>
                   <Sparkles color={"#fff"} size={16} />
                 </Text>
+
                 <Text style={styles.subtitle}>
-                  {user?.poin_loyalitas || "0"} Reusepoint{" "}
+                  {user?.poin_reward || "0"} Reusepoint{" "}
                 </Text>
               </View>
+
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                <Text style={{ marginBottom: 4 }}>
+                  <Wallet color={"#fff"} size={16} />
+                </Text>
+
+                <Text style={styles.subtitle}>
+                  Saldo: Rp {user?.komisi?.toLocaleString("id-ID") || "0"}
+                </Text>
+              </View>
+
             </View>
           </View>
         </LinearGradient>
