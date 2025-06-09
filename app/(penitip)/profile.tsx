@@ -7,26 +7,27 @@ import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import {
-    Bell,
-    ChevronRight,
-    Fingerprint,
-    History,
-    LogOut,
-    Mail,
-    Phone,
-    Sparkles,
-    User,
-    UserRound,
+  Bell,
+  ChevronRight,
+  Fingerprint,
+  History,
+  LogOut,
+  Mail,
+  Phone,
+  Sparkles,
+  User,
+  UserRound,
+  Wallet,
 } from "lucide-react-native";
 import React, { useRef, useState } from "react";
 import {
-    Image,
-    Modal,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Image,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function ProfileScreen() {
@@ -99,16 +100,27 @@ export default function ProfileScreen() {
                   {user?.nama || "Nama Pengguna"}
                 </Text>
               </View>
-              <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
-              >
+
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                 <Text style={{ marginBottom: 4 }}>
                   <Sparkles color={"#fff"} size={16} />
                 </Text>
+
                 <Text style={styles.subtitle}>
-                  {user?.poin_loyalitas || "0"} Reusepoint{" "}
+                  {user?.poin_reward || "0"} Reusepoint{" "}
                 </Text>
               </View>
+
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                <Text style={{ marginBottom: 4 }}>
+                  <Wallet color={"#fff"} size={16} />
+                </Text>
+
+                <Text style={styles.subtitle}>
+                  Saldo: Rp {user?.komisi?.toLocaleString("id-ID") || "0"}
+                </Text>
+              </View>
+
             </View>
           </View>
         </LinearGradient>
@@ -147,7 +159,13 @@ export default function ProfileScreen() {
           <View style={styles.section}>
             <Text style={[styles.title, { color: "#000" }]}>Data Pribadi</Text>
             {[
-              { icon: <History size={18} />, label: "History Transaksi" },
+              {
+                icon: <History size={18} />,
+                label: "History Transaksi",
+                onPress: () => router.push("/history-penitip"),
+              },
+
+
               { icon: <Bell size={18} />, label: "Pengaturan Notifikasi" },
               {
                 icon: <LogOut size={18} />,
