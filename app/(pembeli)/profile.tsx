@@ -31,7 +31,7 @@ import {
   View,
 } from "react-native";
 
-export default function ProfileScreen() {
+export default function PembeliProfileScreen() {
   const router = useRouter();
 
   const scrollRef = useRef<ScrollView>(null);
@@ -59,7 +59,7 @@ export default function ProfileScreen() {
 
         if (!token) throw new Error("User Token not found");
 
-        const res = await fetch(`${BASE_URL_MOBILE}/transaksi/by-pembeli`, {
+        const res = await fetch(`${BASE_URL_MOBILE}/by-pembeli/transaksi/on-going`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -74,7 +74,6 @@ export default function ProfileScreen() {
         }
 
         const data = await res.json();
-        // console.log("Data Transaksi: ", data);
         setTransaksiList(
           (data.transaksi ?? [])
             .filter((t : any) =>

@@ -3,7 +3,7 @@ import GradientInput from "@/components/GradientInput";
 import ProductCard from "@/components/PembeliProductCard";
 import { BASE_URL_API } from "@/context/config";
 import { useAuthRedirect } from "@/context/UserContext";
-import { Barang } from "@/model/Product";
+import { BarangModel } from "@/model/Barang";
 import { UserModel } from "@/model/User";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
@@ -33,12 +33,12 @@ import {
   View,
 } from "react-native";
 
-export default function HomePage() {
+export default function PembeliHomePage() {
   useDoubleBackExit();
 
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const [BarangList, setBarangList] = useState<Barang[]>([]);
+  const [BarangList, setBarangList] = useState<BarangModel[]>([]);
   const [loading, setLoading] = useState(true);
 
   const screenWidth = Dimensions.get("window").width;

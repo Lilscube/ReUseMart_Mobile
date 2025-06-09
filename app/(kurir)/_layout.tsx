@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { Tabs } from "expo-router";
-import { Gift, Home, User } from "lucide-react-native";
+import { BaggageClaim, Home, User } from "lucide-react-native";
 import { StyleSheet, Text } from "react-native";
 
 export default function TabLayout() {
@@ -28,8 +28,8 @@ export default function TabLayout() {
           switch (route.name) {
             case "dashboard":
               return <Home color={color} size={24} />;
-            case "pengantaran":
-              return <Gift color={color} size={24} />;
+            case "pengiriman":
+              return <BaggageClaim color={color} size={24} />;
             case "profile":
               return <User color={color} size={24} />;
             default:
@@ -62,7 +62,7 @@ export default function TabLayout() {
       })}
     >
       <Tabs.Screen name="dashboard" options={{ title: "Dashboard" }} />
-      <Tabs.Screen name="pengantaran" options={{ title: "Pengantaran" }} />
+      <Tabs.Screen name="pengiriman" options={{ title: "Pengiriman" }} />
       <Tabs.Screen name="profile" options={{ title: "Profil" }} />
     </Tabs>
   );
@@ -72,8 +72,8 @@ const getTabLabel = (routeName: string) => {
   switch (routeName) {
     case "dashboard":
       return "Dashboard";
-    case "pengantaran":
-      return "Merch";
+    case "pengiriman":
+      return "Pengiriman";
     case "profile":
       return "Profil";
     default:
