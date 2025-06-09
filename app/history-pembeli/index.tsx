@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
+import { BASE_URL_MOBILE } from "@/context/config";
 import { TransaksiModel } from "@/model/Transaksi";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import {
-    View,
-    Text,
-    TouchableOpacity,
-    ScrollView,
-    StyleSheet,
     Image,
     SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
-import { useRouter } from "expo-router";
-import { BASE_URL_MOBILE } from "@/context/config";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function formatDate(dateString: string | null) {
     if (!dateString) return "-";
@@ -33,7 +33,7 @@ export default function HistoryPembeliPage() {
         const fetchRiwayat = async () => {
             try {
                 const token = await AsyncStorage.getItem("token");
-                const res = await fetch(`${BASE_URL_MOBILE}/transaksi/by-pembeli`, {
+                const res = await fetch(`${BASE_URL_MOBILE}/by-pembeli/transaksi`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

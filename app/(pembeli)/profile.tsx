@@ -10,28 +10,28 @@ import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import {
-  Bell,
-  ChevronRight,
-  History,
-  LogOut,
-  Mail,
-  Phone,
-  Sparkles,
-  User,
-  UserRound,
+    Bell,
+    ChevronRight,
+    History,
+    LogOut,
+    Mail,
+    Phone,
+    Sparkles,
+    User,
+    UserRound,
 } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Image,
-  Modal,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Image,
+    Modal,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 
-export default function PembeliProfileScreen() {
+export default function ProfileScreen() {
   const router = useRouter();
 
   const scrollRef = useRef<ScrollView>(null);
@@ -59,7 +59,7 @@ export default function PembeliProfileScreen() {
 
         if (!token) throw new Error("User Token not found");
 
-        const res = await fetch(`${BASE_URL_MOBILE}/by-pembeli/transaksi/on-going`, {
+        const res = await fetch(`${BASE_URL_MOBILE}/by-pembeli/transaksi`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -74,6 +74,7 @@ export default function PembeliProfileScreen() {
         }
 
         const data = await res.json();
+        // console.log("Data Transaksi: ", data);
         setTransaksiList(
           (data.transaksi ?? [])
             .filter((t : any) =>
