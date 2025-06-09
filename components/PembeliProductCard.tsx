@@ -1,6 +1,7 @@
 import { Barang } from "@/model/Product";
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useRouter } from "expo-router";
 
 interface Props {
   item: Barang;
@@ -16,8 +17,14 @@ const formatRupiah = (value: number) => {
 };
 
 export default function ProductCard({ item, width }: Props) {
+  const router = useRouter();
+
   return (
-    <View style={[styles.card, { width }]}>
+    <TouchableOpacity
+      onPress={() => router.push(`/detail-barang/${item.id_barang}`)}
+      style={[styles.card, { width }]}
+    >
+      {/* <View style={[styles.card, { width }]}> */}
       {item.gambar_barang?.[0]?.src_img ? (
         <Image
           source={{ uri: item.gambar_barang[0].src_img }}
@@ -31,7 +38,7 @@ export default function ProductCard({ item, width }: Props) {
         <Text style={styles.title}>{item.nama_barang}</Text>
         <Text style={styles.price}>Rp {formatRupiah(item.harga_barang)}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
