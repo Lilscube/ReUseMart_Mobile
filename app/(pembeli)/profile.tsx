@@ -59,7 +59,7 @@ export default function ProfileScreen() {
 
         if (!token) throw new Error("User Token not found");
 
-        const res = await fetch(`${BASE_URL_MOBILE}/transaksi/by-pembeli`, {
+        const res = await fetch(`${BASE_URL_MOBILE}/by-pembeli/transaksi`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -76,7 +76,11 @@ export default function ProfileScreen() {
         const data = await res.json();
         // console.log("Data Transaksi: ", data);
         setTransaksiList(
-          data.transaksi?.map((t: any) => ({
+          (data.transaksi ?? [])
+            .filter((t : any) =>
+              ["PAID", "PENDING", "ON_PROGRES"].includes(t.status_transaksi) 
+          )
+          .map((t: any) => ({
             ...t,
             barang: t.barang ?? [],
           })) ?? []
@@ -185,9 +189,8 @@ export default function ProfileScreen() {
                   <View style={styles.itemRow}>
                     <Image
                       source={{
-                        uri:
-                          transaksi.barang?.[0]?.gambar_barang ||
-                          "https://via.placeholder.com/80",
+                        uri: transaksi.barang?.[0]?.gambar_barang?.[0]?.src_img || "https://via.placeholder.com/80",
+
                       }}
                       style={styles.imagePlaceholder}
                     />
@@ -207,7 +210,10 @@ export default function ProfileScreen() {
                   <GradientOutlineButton
                     title="Lihat Detail Transaksi"
                     onPress={() => {
-                      console.log("Klik transaksi:", transaksi.id_transaksi);
+                      router.push({
+                        pathname: "/detail-transaksi-pembeli/[id_transaksi]" as const,
+                        params: { id_transaksi: transaksi.id_transaksi.toString() },
+                      });
                     }}
                     size="small"
                   />
@@ -256,8 +262,14 @@ export default function ProfileScreen() {
           <View style={styles.section}>
             <Text style={[styles.title, { color: "#000" }]}>Data Pribadi</Text>
             {[
-              { icon: <History size={18} />, label: "History Transaksi" },
+              {
+                icon: <History size={18} />,
+                label: "History Transaksi",
+                onPress: () => router.push("/history-pembeli"),
+              },
+
               { icon: <Bell size={18} />, label: "Pengaturan Notifikasi" },
+
               {
                 icon: <LogOut size={18} />,
                 label: "Logout",

@@ -3,40 +3,42 @@ import GradientInput from "@/components/GradientInput";
 import ProductCard from "@/components/PembeliProductCard";
 import { BASE_URL_API } from "@/context/config";
 import { useAuthRedirect } from "@/context/UserContext";
-import { Barang } from "@/model/Product";
+import { BarangModel } from "@/model/Barang";
 import { UserModel } from "@/model/User";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
+import { TouchableOpacity, Image} from "react-native";
+
 import {
-    Baby,
-    Bell,
-    BookOpenText,
-    BriefcaseBusiness,
-    CarFront,
-    Gem,
-    Guitar,
-    Headphones,
-    Leaf,
-    Shirt,
-    Sofa,
+  Baby,
+  Bell,
+  BookOpenText,
+  BriefcaseBusiness,
+  CarFront,
+  Gem,
+  Guitar,
+  Headphones,
+  Leaf,
+  Shirt,
+  Sofa,
 } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    Dimensions,
-    FlatList,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  Dimensions,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 
-export default function HomePage() {
+export default function PembeliHomePage() {
   useDoubleBackExit();
 
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const [BarangList, setBarangList] = useState<Barang[]>([]);
+  const [BarangList, setBarangList] = useState<BarangModel[]>([]);
   const [loading, setLoading] = useState(true);
 
   const screenWidth = Dimensions.get("window").width;
@@ -123,7 +125,7 @@ export default function HomePage() {
                   </View>
                   <GradientInput
                     placeholder="Cari apa hari ini?"
-                    onChangeText={(value) => {}}
+                    onChangeText={(value) => { }}
                     containerStyle={{
                       position: "relative",
                       top: 10,
@@ -225,7 +227,28 @@ export default function HomePage() {
             </>
           }
           renderItem={({ item }) => (
-            <ProductCard item={item} width={itemWidth - 12} />
+             <ProductCard item={item} width={itemWidth - 12} />
+            // <TouchableOpacity
+            //   onPress={() => router.push(`/detail-barang/${item.id_barang}`)}
+            //   style={{
+            //     width: itemWidth,
+            //     backgroundColor: "#f8f8f8",
+            //     padding: 10,
+            //     borderRadius: 10,
+            //   }}
+            // >
+            //   <Image
+            //     // source={{ uri: item.gambarbarang?.[0]?.url || "https://via.placeholder.com/150" }}
+            //     style={{ width: "100%", height: 100, borderRadius: 8 }}
+            //     resizeMode="cover"
+            //   />
+            //   <Text style={{ fontWeight: "bold", fontSize: 14, marginTop: 8 }}>
+            //     {item.nama_barang}
+            //   </Text>
+            //   <Text style={{ color: "#220593", fontSize: 13 }}>
+            //     Rp{item.harga_barang.toLocaleString("id-ID")}
+            //   </Text>
+            // </TouchableOpacity>
           )}
         />
       )}

@@ -6,4 +6,6 @@ export interface UserModel {
   role: "penitip" | "pembeli" | "kurir" | "hunter";
   src_img_profile?: string;
   poin_loyalitas?: number;
+  poin_reward?: number;
+  komisi?: number;
 }
