@@ -51,12 +51,15 @@ export default function DetailPengirimanPage() {
   const handleFinish = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
-      const res = await fetch(`${BASE_URL_MOBILE}/by-kurir/pengiriman/${id}/done`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await fetch(
+        `${BASE_URL_MOBILE}/by-kurir/pengiriman/${id}/done`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       const data = await res.json();
 
@@ -242,11 +245,13 @@ export default function DetailPengirimanPage() {
               </Text>
             </View>
           </View>
-          <GradientButton
-            title="Selesaikan Pengiriman"
-            onPress={() => setModalVisible(true)}
-            style={{ marginTop: 100 }}
-          />
+          {label?.trim().toUpperCase() === "SEDANG DIKIRIM" && (
+            <GradientButton
+              title="Selesaikan Pengiriman"
+              onPress={() => setModalVisible(true)}
+              style={{ marginTop: 100 }}
+            />
+          )}
 
           <Modal
             animationType="fade"
