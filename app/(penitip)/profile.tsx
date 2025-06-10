@@ -49,6 +49,21 @@ export default function ProfileScreen() {
     setShowLogoutModal(true);
   }
 
+  function formatRupiah(value: number | string | null | undefined): string {
+  if (value == null) return "Rp0";
+  const angka = typeof value === "string" ? parseFloat(value) : value;
+  if (isNaN(angka)) return "Rp0";
+
+  return angka.toLocaleString("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
+}
+
+
+
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView
@@ -117,7 +132,7 @@ export default function ProfileScreen() {
                 </Text>
 
                 <Text style={styles.subtitle}>
-                  Saldo: Rp {user?.komisi?.toLocaleString("id-ID") || "0"}
+                  Saldo: {formatRupiah (user?.komisi)}
                 </Text>
               </View>
 

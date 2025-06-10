@@ -1,20 +1,20 @@
-import { Barang } from "@/model/Product";
+import { BarangModel } from "@/model/Barang";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
 
 interface Props {
-  item: Barang;
+  item: BarangModel;
   width: number;
 }
 
-const formatRupiah = (value: number) => {
-  return new Intl.NumberFormat("id-ID", {
+function formatRupiah(angka: number | string): string {
+  const nilai = typeof angka === "string" ? parseFloat(angka) : angka;
+  return nilai.toLocaleString("id-ID", {
     style: "currency",
     currency: "IDR",
-    minimumFractionDigits: 0,
-  }).format(value);
-};
+  });
+}
 
 export default function ProductCard({ item, width }: Props) {
   const router = useRouter();

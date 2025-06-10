@@ -25,6 +25,20 @@ function formatDate(dateString: string | null) {
     });
 }
 
+function formatRupiah(value: number | string): string {
+    const angka = typeof value === "string" ? parseFloat(value) : value;
+    if (isNaN(angka)) return "Rp0";
+
+    return angka.toLocaleString("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0, // tidak menampilkan .00
+        maximumFractionDigits: 0, // pastikan tidak ada angka desimal
+    });
+}
+
+
+
 export default function HistoryPembeliPage() {
     const router = useRouter();
     const [riwayat, setRiwayat] = useState<TransaksiModel[]>([]);
@@ -80,7 +94,7 @@ export default function HistoryPembeliPage() {
                                         {trx.barang[0].nama_barang}
                                     </Text>
                                     <Text style={styles.productPrice}>
-                                        Rp{trx.barang[0].harga_barang.toLocaleString("id-ID")}
+                                        {formatRupiah(trx.barang[0].harga_barang)}
                                     </Text>
                                 </View>
                             </View>
@@ -94,7 +108,7 @@ export default function HistoryPembeliPage() {
 
                         <View style={styles.bottomRow}>
                             <Text style={styles.totalText}>
-                                Total Bayar: Rp{trx.harga_akhir.toLocaleString("id-ID")}
+                                {formatRupiah(trx.harga_akhir)}
                             </Text>
 
                             <TouchableOpacity

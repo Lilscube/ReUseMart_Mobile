@@ -1,23 +1,31 @@
-import { Barang } from "@/model/Product";
+import { BarangModel } from "@/model/Barang";
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useRouter } from "expo-router";
 
 interface Props {
-  item: Barang;
+  item: BarangModel;
   width: number;
 }
 
-const formatRupiah = (value: number) => {
-  return new Intl.NumberFormat("id-ID", {
+function formatRupiah(angka: number | string): string {
+  const nilai = typeof angka === "string" ? parseFloat(angka) : angka;
+  return nilai.toLocaleString("id-ID", {
     style: "currency",
     currency: "IDR",
-    minimumFractionDigits: 0,
-  }).format(value);
-};
+  });
+}
+
 
 export default function ProductCard({ item, width }: Props) {
+  const router = useRouter();
+
+
   return (
-    <View style={[styles.card, styles.shadowWrapper, { width }]}>
+    <TouchableOpacity
+      //onPress={() => router.push(`/detail-penitipan/${item.id_penitipan}`)}
+      style={[styles.card, { width }]}
+    >
       {item.gambar_barang?.[0]?.src_img ? (
         <Image
           source={{ uri: item.gambar_barang[0].src_img }}
@@ -33,7 +41,7 @@ export default function ProductCard({ item, width }: Props) {
         <Text style={styles.price}>{formatRupiah(item.harga_barang)}</Text>
         <Text style={styles.title}>Status Titip: {item.status_titip}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
