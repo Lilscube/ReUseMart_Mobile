@@ -1,8 +1,16 @@
+import { BASE_URL_API } from "@/context/config";
+import { MerchandiseModel } from "@/model/Merchandise";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
-import { MerchandiseModel } from "@/model/Merchandise";
-import { BASE_URL_API } from "@/context/config";
+import {
+    Image,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 export default function DetailMerchandisePage() {
   const { id_merchandise } = useLocalSearchParams();
@@ -12,7 +20,9 @@ export default function DetailMerchandisePage() {
   useEffect(() => {
     const fetchMerchandise = async () => {
       try {
-        const res = await fetch(`${BASE_URL_API}/merchandise/${id_merchandise}`);
+        const res = await fetch(
+          `${BASE_URL_API}/merchandise/${id_merchandise}`
+        );
         const data = await res.json();
         setMerch(data.merchandise);
       } catch (err) {
@@ -26,17 +36,20 @@ export default function DetailMerchandisePage() {
   if (!merch) return <Text style={{ padding: 20 }}>Memuat data...</Text>;
 
   return (
-
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView style={{ padding: 20 }}>
-
         <View>
           <Text style={styles.title}>Pilih Merchandise</Text>
         </View>
 
         <Image
           source={{ uri: merch.src_img }}
-          style={{ width: "100%", height: 500, borderRadius: 12, marginBottom: 16 }}
+          style={{
+            width: "100%",
+            height: 500,
+            borderRadius: 12,
+            marginBottom: 16,
+          }}
           resizeMode="cover"
         />
 

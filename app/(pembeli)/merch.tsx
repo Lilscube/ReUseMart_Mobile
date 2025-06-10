@@ -1,32 +1,18 @@
-import { SafeAreaView, Text, View, FlatList, Dimensions, StyleSheet } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { BASE_URL_API } from "@/context/config";
 import { MerchandiseModel } from "@/model/Merchandise";
 import { UserModel } from "@/model/User";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { BASE_URL_API } from "@/context/config";
-import { useFocusEffect } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
+import { Dimensions, FlatList, StyleSheet, Text } from "react-native";
 
+import { Sparkles } from "lucide-react-native";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  Bell,
-  ChevronRight,
-  History,
-  LogOut,
-  Mail,
-  Phone,
-  Sparkles,
-  User,
-  UserRound,
-} from "lucide-react-native";
-import React, { useEffect, useRef, useState, useCallback } from "react";
-import {
-  Image,
-  Modal,
-  ScrollView,
-  //StyleSheet,
-  //Text,
-  TouchableOpacity,
-  //View,
+    Image,
+    ScrollView,
+    //StyleSheet,
+    //Text,
+    TouchableOpacity,
 } from "react-native";
 
 const screenWidth = Dimensions.get("window").width;
@@ -38,7 +24,6 @@ export default function ClaimPage() {
   const router = useRouter();
 
   const scrollRef = useRef<ScrollView>(null);
-
 
   useEffect(() => {
     const fetchMerchandise = async () => {
@@ -59,57 +44,52 @@ export default function ClaimPage() {
     fetchMerchandise();
   }, []);
 
-
   return (
-    // <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-    <ScrollView
-      ref={scrollRef}
+    <FlatList
+      data={rewards}
+      keyExtractor={(item) => item.id_merchandise.toString()}
+      numColumns={2}
       contentContainerStyle={{ paddingBottom: 24 }}
-      showsVerticalScrollIndicator={false}
-    >
-      <LinearGradient
-        colors={["#26C2FF", "#220593"]}
-        locations={[0.01, 0.9]}
-        start={{ x: 1, y: 0 }}
-        end={{ x: 0, y: 0 }}
-        style={styles.container}
-      >
-        <Text style={[styles.title, { marginTop: 16 }]}>Poin Anda:</Text>
-
-        <Text style={styles.subtitle}>
-          <Sparkles color={"#fff"} size={16} /> {user?.poin_loyalitas?.toLocaleString("id-ID") || "0"} Reusepoint
-        </Text>
-      </LinearGradient>
-
-      {/* Section Title */}
-      <Text style={styles.sectionTitle}>Pilih Merchandise</Text>
-
-      {/* Grid Merchandise */}
-      <FlatList
-        data={rewards}
-        numColumns={2}
-        keyExtractor={(item) => item.id_merchandise.toString()}
-        columnWrapperStyle={{ justifyContent: "space-between", paddingHorizontal: 20 }}
-        contentContainerStyle={{ paddingBottom: 20 }}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => {
-              router.push({
-                pathname: "/detail-merch/[id_merchandise]",
-                params: { id_merchandise: item.id_merchandise.toString() },
-              });
-            }}
-            style={styles.card}
+      columnWrapperStyle={{
+        justifyContent: "space-between",
+        paddingHorizontal: 20,
+      }}
+      ListHeaderComponent={
+        <>
+          <LinearGradient
+            colors={["#26C2FF", "#220593"]}
+            locations={[0.01, 0.9]}
+            start={{ x: 1, y: 0 }}
+            end={{ x: 0, y: 0 }}
+            style={styles.container}
           >
-            <Image source={{ uri: item.src_img }} style={styles.imageBox} resizeMode="cover" />
-            <Text style={styles.itemTitle}>{item.nama_merch}</Text>
-            <Text style={styles.itemPoint}>{item.jumlah_poin} poin</Text>
-          </TouchableOpacity>
-        )}
-      />
+            <Text style={[styles.title, { marginTop: 16 }]}>Poin Anda:</Text>
+            <Text style={styles.subtitle}>
+              <Sparkles color={"#fff"} size={16} />{" "}
+              {user?.poin_loyalitas?.toLocaleString("id-ID") || "0"} Reusepoint
+            </Text>
+          </LinearGradient>
 
-    </ScrollView>
-    // </SafeAreaView>
+          <Text style={styles.sectionTitle}>Pilih Merchandise</Text>
+        </>
+      }
+      renderItem={({ item }) => (
+        <TouchableOpacity
+          onPress={() => {
+            router.push(`/detail-merch/${item.id_merchandise}`);
+          }}
+          style={styles.card}
+        >
+          <Image
+            source={{ uri: item.src_img }}
+            style={styles.imageBox}
+            resizeMode="cover"
+          />
+          <Text style={styles.itemTitle}>{item.nama_merch}</Text>
+          <Text style={styles.itemPoint}>{item.jumlah_poin} poin</Text>
+        </TouchableOpacity>
+      )}
+    />
   );
 }
 
