@@ -1,6 +1,17 @@
 import { useEffect, useState } from "react";
 import { TransaksiModel } from "@/model/Transaksi";
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Image, SafeAreaView } from "react-native";
+import { BarangModel } from "@/model/Barang";
+import { BASE_URL_MOBILE } from "@/context/config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    ScrollView,
+    StyleSheet,
+    Image,
+    SafeAreaView,
+} from "react-native";
 import { useRouter } from "expo-router";
 
 function formatDate(dateString: string | null) {
@@ -15,45 +26,89 @@ function formatDate(dateString: string | null) {
     });
 }
 
+function formatRupiah(value: number | string): string {
+    const angka = typeof value === "string" ? parseFloat(value) : value;
+    if (isNaN(angka)) return "Rp0";
+
+    return angka.toLocaleString("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+    });
+}
+
+
 export default function HistoryPenitipPage() {
     const router = useRouter();
-    const [riwayat, setRiwayat] = useState<TransaksiModel[]>([]);
+    const [riwayat, setRiwayat] = useState<BarangModel[]>([]);
+
 
     useEffect(() => {
-        setRiwayat(dataDummyRiwayat.filter((trx) => trx.status_transaksi === "Terjual"));
+        const fetchRiwayat = async () => {
+            try {
+                const token = await AsyncStorage.getItem("token");
+                const res = await fetch(`${BASE_URL_MOBILE}/barang/by-penitip`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                const data = await res.json();
+                console.log("Data fetched:", data); // untuk debugging
+
+                if (res.ok && data.barang) {
+                    // Gunakan data.barang, bukan data.transaksi
+                    setRiwayat(data.barang);
+                }
+            } catch (err) {
+                console.error("Gagal ambil riwayat penitip:", err);
+            }
+        };
+
+        fetchRiwayat();
     }, []);
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <ScrollView style={styles.container}>
-                {riwayat.map((trx) => (
-                    <View key={trx.id_transaksi} style={styles.card}>
-                        <View style={styles.statusBadge}><Text style={styles.statusText}>{trx.status_transaksi}</Text></View>
-                        <Text style={styles.text}>Dititipkan pada tanggal: {trx.tanggal_pesan}</Text>
-                        <Text style={styles.text}>Tanggal Expire : {}</Text>
-                        <Text style={styles.text}>Tanggal Terbeli : {formatDate(trx.tanggal_lunas)}</Text>
+                {riwayat.map((barang) => (
+                    <View key={barang.id_barang} style={styles.card}>
+                        {/* <View style={styles.statusBadge}>
+                            <Text style={styles.statusText}>{barang.status_transaksi}</Text>
+                        </View> */}
+                        <Text style={styles.text}>
+                            Dititipkan pada: {formatDate(barang.tanggal_masuk)}
+                        </Text>
+                        {/* <Text style={styles.text}>
+                            Tanggal Terjual: {formatDate(barang.tanggal_keluar)}
+                        </Text> */}
 
                         <View style={styles.productRow}>
-                            <Image source={{ uri: trx.barang[0].gambar_barang }} style={styles.productImage} />
+                            <Image
+                                source={{
+                                    uri:
+                                        barang.gambar_barang?.[0]?.src_img ||
+                                        "https://via.placeholder.com/60",
+                                }}
+                                style={styles.productImage}
+                            />
                             <View>
-                                <Text style={styles.productName}>{trx.barang[0].nama_barang}</Text>
-                                {/* <Text style={styles.productPrice}>Rp{trx.barang[0].harga_barang.toLocaleString()}</Text> */}
-                                <Text style={styles.text}>Status  :{}</Text>
+                                <Text style={styles.productName}>{barang.nama_barang}</Text>
+                                <Text style={styles.productPrice}>
+                                    {formatRupiah(barang.harga_barang)}
+                                </Text>
+                                <Text style={styles.text}>Status: {barang.status_titip}</Text>
                             </View>
                         </View>
 
-                        {trx.barang.length > 1 && (
-                            <Text style={styles.moreProduct}>+ {trx.barang.length - 1} barang lainnya</Text>
-                        )}
-
                         <View style={styles.bottomRow}>
-                            {/* <Text style={styles.totalText}>Total Terjual: Rp {trx.harga_akhir.toLocaleString()}</Text>
                             <TouchableOpacity
-                                // onPress={() => router.push(`/detail-transaksi-penitip/${trx.id_transaksi}`)}
+                                // onPress={() => router.push(`/detail-barang/${barang.id_barang}`)}
                                 style={styles.detailButton}
                             >
-                                <Text style={styles.detailButtonText}>Lihat Detail Transaksi</Text>
-                            </TouchableOpacity> */}
+                                <Text style={styles.detailButtonText}>Lihat Detail Barang</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 ))}
@@ -61,70 +116,6 @@ export default function HistoryPenitipPage() {
         </SafeAreaView>
     );
 }
-
-const dataDummyRiwayat: TransaksiModel[] = [
-    {
-        id_transaksi: 1,
-        no_nota: "25.06.5",
-        harga_awal: 95000,
-        ongkos_kirim: 15000,
-        diskon: 0,
-        harga_akhir: 110000,
-        status_transaksi: "Terjual",
-        tanggal_pesan: "01 Jun 2025, 12:00",
-        
-        tanggal_lunas: "2025-06-01T12:30:00",
-        tambahan_poin: 10,
-        status_pembayaran: "Lunas",
-        img_bukti_transfer: null,
-        is_rated: true,
-        jenis_pengiriman: "Kurir",
-        lokasi: "Jl. Contoh 1",
-        barang: [
-            {
-                id_barang: 1,
-                nama_barang: "Kopi 4 Shot",
-                harga_barang: 19000,
-                stok_barang: 10,
-                gambar_barang: "https://via.placeholder.com/60",
-            },
-            {
-                id_barang: 2,
-                nama_barang: "Brownies Panggang",
-                harga_barang: 76000,
-                stok_barang: 5,
-                gambar_barang: "https://via.placeholder.com/60",
-            },
-        ],
-    },
-    {
-        id_transaksi: 2,
-        no_nota: "25.06.1",
-        harga_awal: 100000,
-        ongkos_kirim: 19000,
-        diskon: 0,
-        harga_akhir: 119000,
-        status_transaksi: "Terjual",
-        tanggal_pesan: "01 Jun 2025, 06:40",
-        
-        tanggal_lunas: "2025-06-01T07:00:00",
-        tambahan_poin: 5,
-        status_pembayaran: "Lunas",
-        img_bukti_transfer: null,
-        is_rated: false,
-        jenis_pengiriman: "Kurir",
-        lokasi: "Jl. Contoh 2",
-        barang: [
-            {
-                id_barang: 3,
-                nama_barang: "Novel Laskar Pelangi",
-                harga_barang: 100000,
-                stok_barang: 3,
-                gambar_barang: "https://via.placeholder.com/60",
-            },
-        ],
-    },
-];
 
 const styles = StyleSheet.create({
     container: {

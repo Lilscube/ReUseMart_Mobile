@@ -3,7 +3,7 @@ import GradientInput from "@/components/GradientInput";
 import ProductCard from "@/components/PenitipProductCard";
 import { BASE_URL_MOBILE } from "@/context/config";
 import { useAuthRedirect } from "@/context/UserContext";
-import { Barang } from "@/model/Product";
+import { BarangModel } from "@/model/Barang";
 import { UserModel } from "@/model/User";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
@@ -21,7 +21,7 @@ import {
 export default function PembeliBarangPage() {
   useDoubleBackExit();
 
-  const [BarangList, setBarangList] = useState<Barang[]>([]);
+  const [BarangList, setBarangList] = useState<BarangModel[]>([]);
   const [loading, setLoading] = useState(false);
 
   const screenWidth = Dimensions.get("window").width;
