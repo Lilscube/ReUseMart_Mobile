@@ -5,6 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { Dimensions, FlatList, StyleSheet, Text } from "react-native";
 
+import { getCurrentUser } from "@/context/UserContext";
 import { Sparkles } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -24,6 +25,16 @@ export default function ClaimPage() {
   const router = useRouter();
 
   const scrollRef = useRef<ScrollView>(null);
+
+  useEffect(() => {
+    getCurrentUser()
+      .then((data) => {
+        setUser(data);
+      })
+      .catch((err) => {
+        console.error("Gagal ambil user:", err);
+      })
+  }, []);
 
   useEffect(() => {
     const fetchMerchandise = async () => {
