@@ -11,6 +11,8 @@ import { Bell } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import TopSellerCard from "@/components/TopSellerCard";
 import { BASE_URL_API } from "@/context/config";
+import { TouchableOpacity, Image } from "react-native";
+import { useRouter } from "expo-router";
 import {
   ActivityIndicator,
   Dimensions,
@@ -21,8 +23,9 @@ import {
 } from "react-native";
 
 export default function PembeliBarangPage() {
+  
   useDoubleBackExit();
-
+  const router = useRouter();
   const [BarangList, setBarangList] = useState<BarangModel[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -128,8 +131,9 @@ export default function PembeliBarangPage() {
             </>
           }
           renderItem={({ item }) => (
-
-            <ProductCard item={item} width={itemWidth} />
+            <TouchableOpacity onPress={() => router.push(`/detail-penitipan/${item.id_barang}`)}>
+              <ProductCard item={item} width={itemWidth} />
+            </TouchableOpacity>
           )}
         />
       )}
