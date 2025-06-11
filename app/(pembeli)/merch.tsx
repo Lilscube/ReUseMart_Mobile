@@ -35,6 +35,16 @@ export default function ClaimPage() {
   const [loading, setLoading] = useState(true);
 
   const scrollRef = useRef<ScrollView>(null);
+  
+  useEffect(() => {
+    getCurrentUser()
+      .then((data) => {
+        setUser(data);
+      })
+      .catch((err) => {
+        console.error("Gagal ambil user:", err);
+      })
+  }, []);
 
   const fetchMerchandise = async () => {
     try {

@@ -8,6 +8,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { Bell } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
+import TopSellerCard from "@/components/TopSellerCard";
 import {
     RefreshControl,
     ScrollView,
@@ -150,6 +151,7 @@ export default function KurirDashboardPage() {
             <Bell color={"#fff"} size={24} />
           </View>
         </LinearGradient>
+        <TopSellerCard/>
         <View style={[styles.container]}>
           <Text style={styles.sectionTitle}>Pengiriman Hari Ini</Text>
           <View
