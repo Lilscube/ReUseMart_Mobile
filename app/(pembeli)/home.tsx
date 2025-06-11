@@ -7,7 +7,8 @@ import { BarangModel } from "@/model/Barang";
 import { UserModel } from "@/model/User";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { TouchableOpacity, Image} from "react-native";
+import { TouchableOpacity, Image } from "react-native";
+import TopSellerCard from "@/components/TopSellerCard";
 
 import {
   Baby,
@@ -72,6 +73,7 @@ export default function PembeliHomePage() {
   }
 
   return (
+
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       {loading ? (
         <ActivityIndicator
@@ -136,7 +138,7 @@ export default function PembeliHomePage() {
               </View>
               <View style={[styles.container, { paddingTop: 44, zIndex: -1 }]}>
                 <View style={styles.section}>
-                  <View
+                  {/* <View
                     style={[
                       styles.imagePlaceholder,
                       {
@@ -147,9 +149,20 @@ export default function PembeliHomePage() {
                     ]}
                   >
                     <Text>Ini Banner Iklan</Text>
+                  </View> */}
+                  <View style={styles.section}>
+                    <Image
+                      source={{ uri: "https://i.pinimg.com/736x/43/f0/6e/43f06e11637ffbf70849bab1073a74ff.jpg" }} // GANTI dengan URL gambar kamu
+                      style={styles.bannerImage}
+                      resizeMode="cover"
+                    />
                   </View>
+
                 </View>
                 <View style={styles.section}>
+
+                  <TopSellerCard />
+
                   <Text style={[styles.title, { color: "#000" }]}>
                     Kategori
                   </Text>
@@ -227,7 +240,7 @@ export default function PembeliHomePage() {
             </>
           }
           renderItem={({ item }) => (
-             <ProductCard item={item} width={itemWidth - 12} />
+            <ProductCard item={item} width={itemWidth - 12} />
             // <TouchableOpacity
             //   onPress={() => router.push(`/detail-barang/${item.id_barang}`)}
             //   style={{
@@ -308,4 +321,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: "center",
   },
+
+  bannerImage: {
+  width: "100%",
+  height: 190,
+  borderRadius: 10,
+  backgroundColor: "#eee",
+}
+
 });

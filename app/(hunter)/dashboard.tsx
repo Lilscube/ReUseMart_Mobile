@@ -2,6 +2,7 @@ import { getCurrentUser } from "@/context/UserContext";
 import { UserModel } from "@/model/User";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
+import TopSellerCard from "@/components/TopSellerCard";
 
 export default function PegawaiDashboardPage() {
   const [user, setUser] = useState<UserModel | null>(null);
@@ -39,6 +40,9 @@ export default function PegawaiDashboardPage() {
       <Text style={{ fontSize: 24, fontWeight: "bold" }}>Halaman Dashboard Hunter</Text>
       <Text>Nama: {user.nama}</Text>
       <Text>Role: {user.role}</Text>
+      <TopSellerCard/>
     </View>
+    
+    
   );
 }

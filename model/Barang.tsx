@@ -30,6 +30,7 @@ export interface BarangModel {
     id_gambar: number;
     src_img: string;
   }[];
+  gambar_preview?: string;
 
   created_at?: string;
   updated_at?: string;
