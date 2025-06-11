@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { TransaksiModel } from "@/model/Transaksi";
-import { BarangModel } from "@/model/Barang";
 import { BASE_URL_MOBILE } from "@/context/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_BASE_URL } from "@/context/config";
+import { BarangModel } from "@/model/Barang";
+
 import {
     View,
     Text,
@@ -38,10 +40,10 @@ function formatRupiah(value: number | string): string {
     });
 }
 
-
 export default function HistoryPenitipPage() {
     const router = useRouter();
     const [riwayat, setRiwayat] = useState<BarangModel[]>([]);
+
 
 
     useEffect(() => {
@@ -69,49 +71,54 @@ export default function HistoryPenitipPage() {
         fetchRiwayat();
     }, []);
 
+    const isExternal = (url: string) => url.startsWith("http");
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <ScrollView style={styles.container}>
-                {riwayat.map((barang) => (
-                    <View key={barang.id_barang} style={styles.card}>
-                        {/* <View style={styles.statusBadge}>
-                            <Text style={styles.statusText}>{barang.status_transaksi}</Text>
-                        </View> */}
-                        <Text style={styles.text}>
-                            Dititipkan pada: {formatDate(barang.tanggal_masuk)}
-                        </Text>
-                        {/* <Text style={styles.text}>
-                            Tanggal Terjual: {formatDate(barang.tanggal_keluar)}
-                        </Text> */}
+                {riwayat.map((barang) => {
+                    const rawUrl = barang.gambar_barang?.[0]?.src_img || "";
+                    const isExternal = rawUrl.startsWith("http");
+                    const imageUrl = rawUrl
+                        ? rawUrl.startsWith("http://localhost:3000")
+                            ? rawUrl.replace("http://localhost:3000", API_BASE_URL)
+                            : isExternal
+                                ? rawUrl
+                                : `${API_BASE_URL}${rawUrl}`
+                        : "https://via.placeholder.com/60";
 
-                        <View style={styles.productRow}>
-                            <Image
-                                source={{
-                                    uri:
-                                        barang.gambar_barang?.[0]?.src_img ||
-                                        "https://via.placeholder.com/60",
-                                }}
-                                style={styles.productImage}
-                            />
-                            <View>
-                                <Text style={styles.productName}>{barang.nama_barang}</Text>
-                                <Text style={styles.productPrice}>
-                                    {formatRupiah(barang.harga_barang)}
-                                </Text>
-                                <Text style={styles.text}>Status: {barang.status_titip}</Text>
+                    return (
+                        <View key={barang.id_barang} style={styles.card}>
+                            <Text style={styles.text}>
+                                Dititipkan pada: {formatDate(barang.tanggal_masuk)}
+                            </Text>
+
+                            <View style={styles.productRow}>
+                                <Image
+                                    source={{ uri: imageUrl }}
+                                    style={styles.productImage}
+                                    resizeMode="cover"
+                                />
+                                <View>
+                                    <Text style={styles.productName}>{barang.nama_barang}</Text>
+                                    <Text style={styles.productPrice}>
+                                        {formatRupiah(barang.harga_barang)}
+                                    </Text>
+                                    <Text style={styles.text}>Status: {barang.status_titip}</Text>
+                                </View>
+                            </View>
+
+                            <View style={styles.bottomRow}>
+                                <TouchableOpacity
+                                    // onPress={() => router.push(`/detail-barang/${barang.id_barang}`)}
+                                    style={styles.detailButton}
+                                >
+                                    <Text style={styles.detailButtonText}>Lihat Detail Barang</Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
-
-                        <View style={styles.bottomRow}>
-                            <TouchableOpacity
-                                // onPress={() => router.push(`/detail-barang/${barang.id_barang}`)}
-                                style={styles.detailButton}
-                            >
-                                <Text style={styles.detailButtonText}>Lihat Detail Barang</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                ))}
+                    );
+                })}
             </ScrollView>
         </SafeAreaView>
     );

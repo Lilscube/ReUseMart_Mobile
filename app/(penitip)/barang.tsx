@@ -9,13 +9,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { Bell } from "lucide-react-native";
 import { useEffect, useState } from "react";
+import TopSellerCard from "@/components/TopSellerCard";
+import { BASE_URL_API } from "@/context/config";
 import {
-    ActivityIndicator,
-    Dimensions,
-    FlatList,
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  Dimensions,
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 
 export default function PembeliBarangPage() {
@@ -110,9 +112,10 @@ export default function PembeliBarangPage() {
                     </View>
                     <Bell color={"#fff"} size={24} />
                   </View>
+
                   <GradientInput
                     placeholder="Cari barang titipan"
-                    onChangeText={(value) => {}}
+                    onChangeText={(value) => { }}
                     containerStyle={{
                       position: "relative",
                       top: 10,
@@ -120,10 +123,12 @@ export default function PembeliBarangPage() {
                     }}
                   />
                 </LinearGradient>
+
               </View>
             </>
           }
           renderItem={({ item }) => (
+
             <ProductCard item={item} width={itemWidth} />
           )}
         />

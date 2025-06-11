@@ -5,6 +5,7 @@ import { BASE_URL_API } from "@/context/config";
 import { TransaksiModel } from "@/model/Transaksi";
 import { UserModel } from "@/model/User";
 import { SafeAreaView } from 'react-native';
+import { API_BASE_URL } from "@/context/config";
 
 import {
     ScrollView,
@@ -15,6 +16,19 @@ import {
     StyleSheet,
     Linking,
 } from "react-native";
+
+function formatDate(dateString: string | null) {
+    if (!dateString) return "-";
+    const date = new Date(dateString);
+    return date.toLocaleString("id-ID", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+}
+
 
 export default function DetailTransaksiPage() {
     const { id_transaksi } = useLocalSearchParams();
@@ -35,7 +49,9 @@ export default function DetailTransaksiPage() {
                 // Normalisasi agar gambar_barang jadi string (bukan objek)
                 const barangWithImage = (data.barang || []).map((item: any) => ({
                     ...item,
-                    gambar_barang: item.src_img, // konversi alias
+                    gambar_barang: item.gambar_barang ?? [
+                        { id_gambar: item.id_gambar ?? 0, src_img: item.src_img },
+                    ],
                 }));
 
                 setTransaksi({
@@ -75,19 +91,26 @@ export default function DetailTransaksiPage() {
                 </View>
 
                 <Text style={styles.label}>No. Nota: <Text style={styles.value}>{transaksi.no_nota}</Text></Text>
-                <Text style={styles.label}>Tanggal Pesan: <Text style={styles.value}>{transaksi.tanggal_pesan}</Text></Text>
+                <Text style={styles.label}>Tanggal Pesan: <Text style={styles.value}>{formatDate(transaksi.tanggal_pesan)}</Text></Text>
 
                 <Text style={styles.sectionTitle}>Detail Produk:</Text>
                 {transaksi.barang?.map((item, idx) => (
                     <View key={idx} style={styles.productCard}>
                         <Image
-                            source={{ uri: item.gambar_barang || "https://via.placeholder.com/60" }}
+                            source={{
+                                uri:
+                                    item.gambar_barang?.[0]?.src_img
+                                        ? item.gambar_barang[0].src_img.startsWith("http")
+                                            ? item.gambar_barang[0].src_img
+                                            : `${API_BASE_URL}${item.gambar_barang[0].src_img}`
+                                        : "https://via.placeholder.com/60",
+                            }}
                             style={styles.productImage}
                         />
 
                         <View style={{ flex: 1 }}>
                             <Text style={styles.productName}>{item.nama_barang}</Text>
-                            <Text style={styles.productPrice}>Rp{item.harga_barang.toLocaleString()}</Text>
+                            <Text style={styles.productPrice}>{`Rp${Number(item.harga_barang).toLocaleString("id-ID")}`}</Text>
                         </View>
                         {/* <TouchableOpacity style={styles.detailButton}>
                             <Text style={styles.detailButtonText}>Lihat Detail</Text>
