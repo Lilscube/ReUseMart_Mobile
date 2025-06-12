@@ -1,7 +1,8 @@
 export async function sendPushNotification(
   expoPushToken: string,
   title: string,
-  body: string
+  body: string,
+  channelId: string = "default"
 ) {
   const message = {
     to: expoPushToken,
@@ -10,8 +11,8 @@ export async function sendPushNotification(
     body: body,
     data: { sentBy: "self" },
     android: {
-      channelId: "default",
-      color: "#FF5733", 
+      channelId, 
+      color: "#FF5733",
     },
   };
 

@@ -48,8 +48,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "4f7f6a5b-192a-4e8b-8f23-4afc70f46b5c"
+        "projectId": "b7505ec4-f3f1-4922-bcb2-8653b6e55753"
       }
-    }
+    },
+    "owner": "szwagery"
   }
 }

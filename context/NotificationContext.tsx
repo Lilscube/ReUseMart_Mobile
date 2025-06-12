@@ -3,15 +3,16 @@ import { registerForPushNotificationsAsync } from "@/utils/registerForPushNotifi
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import React, {
-    createContext,
-    ReactNode,
-    useContext,
-    useEffect,
-    useRef,
-    useState,
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
 } from "react";
 import { BASE_URL_MOBILE } from "./config";
 import { useAuthRedirect } from "./UserContext";
+import { Platform } from "react-native";
 
 interface NotificationContextType {
   expoPushToken: string | null;
@@ -76,6 +77,16 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
       }
     );
   });
+
+  useEffect(() => {
+    if (Platform.OS === "android") {
+      Notifications.setNotificationChannelAsync("custom-sound", {
+        name: "Custom Notification Sound",
+        importance: Notifications.AndroidImportance.HIGH,
+        sound: "huh_sound_effect_cash_money", 
+      });
+    }
+  }, []);
 
   useEffect(() => {
     registerForPushNotificationsAsync().then(

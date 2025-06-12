@@ -49,7 +49,7 @@ export default function PembeliHomePage() {
   const itemWidth = (screenWidth - horizontalPadding * 2 - itemGap) / 2;
 
   const [user, setUser] = useState<UserModel | null>(null);
-  useAuthRedirect(setUser);
+  // useAuthRedirect(setUser);
 
   useEffect(() => {
     fetch(`${BASE_URL_API}/barang`)
