@@ -13,11 +13,11 @@ import { useRouter } from "expo-router";
 import { LockKeyhole, Mail } from "lucide-react-native";
 import React, { useState } from "react";
 import {
-    Linking,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Linking,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function LoginPage() {
@@ -80,6 +80,26 @@ export default function LoginPage() {
     } catch (err) {
       console.error("Login error:", err);
       alert("Terjadi kesalahan saat login");
+    }
+  };
+
+  const handleGuestLogin = async () => {
+    try {
+      await AsyncStorage.setItem("guest", "true");
+      await AsyncStorage.setItem("role", "pembeli");
+
+      if (expoPushToken) {
+        await sendPushNotification(
+          expoPushToken,
+          "Welcome, Guest 👤",
+          "Jelajahi ReUseMart sebagai tamu!"
+        );
+      }
+
+      router.replace("/(pembeli)/home");
+    } catch (error) {
+      console.error("Guest login failed:", error);
+      alert("Gagal login sebagai guest.");
     }
   };
 
@@ -209,10 +229,8 @@ export default function LoginPage() {
             <View style={{ flex: 1, height: 1, backgroundColor: "#000" }} />
           </View>
           <GradientOutlineButton
-            title="Masuk dengan Google"
-            onPress={() => {
-              console.log("Tombol masuk dengan Google ditekan");
-            }}
+            title="Masuk dengan Guest"
+            onPress={handleGuestLogin}
             size="default"
             style={{ marginBottom: 16 }}
           />
