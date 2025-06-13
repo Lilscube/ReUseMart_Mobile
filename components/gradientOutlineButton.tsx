@@ -17,6 +17,7 @@ interface Props {
   textStyle?: TextStyle;
   size?: "default" | "small";
   variant?: "primary" | "danger";
+  disabled?: boolean;
 }
 
 export default function GradientOutlineButton({
@@ -25,6 +26,7 @@ export default function GradientOutlineButton({
   style,
   size = "default",
   variant = "primary",
+  disabled  = false
 }: Props) {
   const isSmall = size === "small";
 
@@ -33,7 +35,7 @@ export default function GradientOutlineButton({
   const color = variant === "danger" ? "#930000" : "#220593";
 
   return (
-    <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
+    <TouchableOpacity style={[styles.button, style]} onPress={!disabled ? onPress : undefined} disabled={disabled}>
       <LinearGradient
         colors={gradientColors}
         start={{ x: 0.3, y: 0 }}

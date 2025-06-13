@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/context/config";
 import Divider from "@/components/Divider";
 import GradientButton from "@/components/GradientButton";
 import GradientOutlineButton from "@/components/GradientOutlineButton";
@@ -10,25 +11,25 @@ import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import {
-    Bell,
-    ChevronRight,
-    History,
-    LogOut,
-    Mail,
-    Phone,
-    Sparkles,
-    User,
-    UserRound,
+  Bell,
+  ChevronRight,
+  History,
+  LogOut,
+  Mail,
+  Phone,
+  Sparkles,
+  User,
+  UserRound,
 } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import {
-    Image,
-    Modal,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Image,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function ProfileScreen() {
@@ -77,13 +78,13 @@ export default function ProfileScreen() {
         // console.log("Data Transaksi: ", data);
         setTransaksiList(
           (data.transaksi ?? [])
-            .filter((t : any) =>
-              ["PAID", "PENDING", "ON_PROGRES"].includes(t.status_transaksi) 
-          )
-          .map((t: any) => ({
-            ...t,
-            barang: t.barang ?? [],
-          })) ?? []
+            .filter((t: any) =>
+              ["PAID", "PENDING", "ON_PROGRES"].includes(t.status_transaksi)
+            )
+            .map((t: any) => ({
+              ...t,
+              barang: t.barang ?? [],
+            })) ?? []
         );
       } catch (err) {
         console.error("Fetch transaksi error:", err);
@@ -187,13 +188,39 @@ export default function ProfileScreen() {
                   </View>
 
                   <View style={styles.itemRow}>
-                    <Image
+                    {/* <Image
                       source={{
                         uri: transaksi.barang?.[0]?.gambar_barang?.[0]?.src_img || "https://via.placeholder.com/80",
 
                       }}
                       style={styles.imagePlaceholder}
-                    />
+                    /> */}
+                    {(() => {
+                      const gambarObj = transaksi.barang?.[0]?.gambar_barang?.[0]?.src_img;
+                      const isExternal = (url: string) => url?.startsWith("http");
+
+                      const imageUrl = gambarObj || null;
+
+                      const fullImageUrl = imageUrl
+                        ? imageUrl.startsWith("http://localhost:3000")
+                          ? imageUrl.replace("http://localhost:3000", API_BASE_URL)
+                          : isExternal(imageUrl)
+                            ? imageUrl
+                            : `${API_BASE_URL}${imageUrl}`
+                        : "https://via.placeholder.com/80";
+
+                      return (
+                        <Image
+                          source={{ uri: fullImageUrl }}
+                          style={styles.imagePlaceholder}
+                          resizeMode="cover"
+                          onError={(e) =>
+                            console.warn(`Gagal load gambar transaksi ${index}:`, e.nativeEvent)
+                          }
+                        />
+                      );
+                    })()}
+
                     <View>
                       <Text style={styles.itemName}>
                         {transaksi.barang[0]?.nama_barang ||

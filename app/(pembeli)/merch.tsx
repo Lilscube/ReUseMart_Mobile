@@ -3,8 +3,15 @@ import { MerchandiseModel } from "@/model/Merchandise";
 import { UserModel } from "@/model/User";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { Dimensions, FlatList, StyleSheet, Text } from "react-native";
+import {
+    Dimensions,
+    FlatList,
+    RefreshControl,
+    StyleSheet,
+    Text,
+} from "react-native";
 
+import { getCurrentUser, useAuthRedirect } from "@/context/UserContext";
 import { Sparkles } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -20,27 +27,43 @@ const itemSize = (screenWidth - 60) / 2;
 
 export default function ClaimPage() {
   const [user, setUser] = useState<UserModel | null>(null);
+  useAuthRedirect(setUser);
+
   const [rewards, setRewards] = useState<MerchandiseModel[]>([]);
   const router = useRouter();
 
+  const [loading, setLoading] = useState(true);
+
   const scrollRef = useRef<ScrollView>(null);
+  
+  useEffect(() => {
+    getCurrentUser()
+      .then((data) => {
+        setUser(data);
+      })
+      .catch((err) => {
+        console.error("Gagal ambil user:", err);
+      })
+  }, []);
+
+  const fetchMerchandise = async () => {
+    try {
+      const res = await fetch(`${BASE_URL_API}/merchandise`);
+
+      if (!res.ok) {
+        throw new Error("Gagal mengambil data merchandise");
+      }
+
+      const data = await res.json();
+      setRewards(data.merchandise || []);
+    } catch (error) {
+      console.error("Gagal memuat merchandise:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchMerchandise = async () => {
-      try {
-        const res = await fetch(`${BASE_URL_API}/merchandise`);
-
-        if (!res.ok) {
-          throw new Error("Gagal mengambil data merchandise");
-        }
-
-        const data = await res.json();
-        setRewards(data.merchandise || []); // `setRewards` harus sudah dideklarasi via useState
-      } catch (error) {
-        console.error("Gagal memuat merchandise:", error);
-      }
-    };
-
     fetchMerchandise();
   }, []);
 
@@ -50,6 +73,15 @@ export default function ClaimPage() {
       keyExtractor={(item) => item.id_merchandise.toString()}
       numColumns={2}
       contentContainerStyle={{ paddingBottom: 24 }}
+      refreshControl={
+        <RefreshControl
+          refreshing={loading}
+          onRefresh={() => {
+            getCurrentUser();
+            fetchMerchandise(); 
+          }}
+        />
+      }
       columnWrapperStyle={{
         justifyContent: "space-between",
         paddingHorizontal: 20,
@@ -66,7 +98,7 @@ export default function ClaimPage() {
             <Text style={[styles.title, { marginTop: 16 }]}>Poin Anda:</Text>
             <Text style={styles.subtitle}>
               <Sparkles color={"#fff"} size={16} />{" "}
-              {user?.poin_loyalitas?.toLocaleString("id-ID") || "0"} Reusepoint
+              {user?.poin_loyalitas || "0"} Reusepoint{" "}
             </Text>
           </LinearGradient>
 
@@ -96,7 +128,6 @@ export default function ClaimPage() {
 const styles = StyleSheet.create({
   container: {
     padding: 24,
-    gap: 24,
   },
   title: {
     color: "white",

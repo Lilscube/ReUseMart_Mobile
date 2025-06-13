@@ -6,6 +6,10 @@ import { UserModel } from "@/model/User";
 import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
+import TopSellerCard from "@/components/TopSellerCard";
+import GradientInput from "@/components/GradientInput";
+
+
 import {
   Bell,
   ChevronRight,
@@ -142,6 +146,9 @@ export default function ProfileScreen() {
         <View style={styles.container}>
           {/* Data Pribadi */}
           <View style={styles.section}>
+                
+            <TopSellerCard />
+
             <Text style={[styles.title, { color: "#000" }]}>Data Pribadi</Text>
             {[
               {

@@ -3,6 +3,7 @@ import { TransaksiModel } from "@/model/Transaksi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "@/context/config";
 import {
     Image,
     SafeAreaView,
@@ -74,7 +75,7 @@ export default function HistoryPembeliPage() {
                             <Text style={styles.statusText}>{trx.status_transaksi}</Text>
                         </View>
                         <Text style={styles.text}>No. Nota: {trx.no_nota}</Text>
-                        <Text style={styles.text}>Dipesan pada: {trx.tanggal_pesan}</Text>
+                        <Text style={styles.text}>Dipesan pada: {formatDate(trx.tanggal_pesan)}</Text>
                         <Text style={styles.text}>
                             Selesai pada: {formatDate(trx.tanggal_lunas)}
                         </Text>
@@ -84,10 +85,14 @@ export default function HistoryPembeliPage() {
                                 <Image
                                     source={{
                                         uri:
-                                            trx.barang[0].gambar_barang?.[0]?.src_img ||
-                                            "https://via.placeholder.com/60",
+                                            trx.barang[0].gambar_barang?.[0]?.src_img?.startsWith("http")
+                                                ? trx.barang[0].gambar_barang[0].src_img
+                                                : `${ API_BASE_URL }${trx.barang[0].gambar_barang?.[0]?.src_img || ""}`,
                                     }}
                                     style={styles.productImage}
+                                    onError={(e) =>
+                                        console.warn("❌ Gagal load gambar:", e.nativeEvent)
+                                    }
                                 />
                                 <View>
                                     <Text style={styles.productName}>
