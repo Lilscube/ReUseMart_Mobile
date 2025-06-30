@@ -53,19 +53,16 @@ export default function LoginPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          email: "tes@email.com",
-          password: "123456",
-        }),
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
-      console.log("👉 BASE_URL_MOBILE:", BASE_URL_MOBILE);
 
       if (response.ok && data.success) {
-        console.log("✅ Login berhasil:", data);
+        console.log("Login berhasil:", data);
 
         await AsyncStorage.setItem("token", data.token);
+
         routeHomepage(data.role);
 
         if (expoPushToken) {
@@ -75,26 +72,14 @@ export default function LoginPage() {
             "Selamat datang kembali di ReUseMart, " + data.nama
           );
         } else {
-          console.warn("⚠️ Token push belum tersedia");
+          console.warn("❌ Token push belum tersedia");
         }
       } else {
-        console.error("❌ Login gagal:");
-        console.log("Status:", response.status);
-        console.log("Data:", data);
-
-        alert(
-          data?.message ||
-            `Login gagal: ${response.status} ${response.statusText}`
-        );
+        alert(data.message || "Login gagal");
       }
-    } catch (err: unknown) {
-      const errorMessage =
-        err instanceof Error
-          ? err.message
-          : "Terjadi kesalahan tidak diketahui";
-
-      console.error("🔥 Login error:", err);
-      alert(`Terjadi kesalahan saat login: ${errorMessage}`);
+    } catch (err) {
+      console.error("Login error:", err);
+      alert("Terjadi kesalahan saat login");
     }
   };
 
